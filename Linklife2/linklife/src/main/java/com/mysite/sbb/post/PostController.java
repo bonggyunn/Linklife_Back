@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Controller
 public class PostController {
+	// 커밋 테스트
 	// 브랜피 푸시 테스트
 	private final PostService postService;
 	private final UserService userService;
