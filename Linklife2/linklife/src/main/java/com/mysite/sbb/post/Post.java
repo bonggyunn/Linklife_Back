@@ -42,7 +42,7 @@ public class Post {
 	private SiteUser author;
 
 	private LocalDateTime modifyDate;
-	
+
 	@ManyToMany
     Set<SiteUser> voter;
 }
