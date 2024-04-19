@@ -18,19 +18,65 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
+//	@Bean 	//회원가입 api 된거
+//	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//		http
+//				.authorizeHttpRequests(authorizeRequests ->
+//						authorizeRequests
+//								.requestMatchers("/user/signup", "/user/**").permitAll() // 회원가입 엔드포인트에 대한 접근 허용
+//								.anyRequest().authenticated() // 다른 요청에는 인증 필요
+//				)
+//				.csrf(AbstractHttpConfigurer::disable) // CSRF 보호 기능 비활성화
+//				.headers(headers -> headers
+//						.addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+//				)
+//				.formLogin(formLogin -> formLogin
+//						.loginPage("/user/login").defaultSuccessUrl("/post/list")
+//				)
+//				.logout(logout -> logout
+//						.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+//						.logoutSuccessUrl("/").invalidateHttpSession(true)
+//				);
+//		return http.build();
+//	}
+//
+//	@Bean //원래 코드
+//	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//		http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+//				.requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
+//				.csrf((csrf) -> csrf.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
+//				.headers((headers) -> headers.addHeaderWriter(
+//						new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
+//				.formLogin((formLogin) -> formLogin.loginPage("/user/login").defaultSuccessUrl("/post/list"))
+//				.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+//						.logoutSuccessUrl("/").invalidateHttpSession(true));
+//		return http.build();
+//	}
+
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//		http.csrf(AbstractHttpConfigurer::disable);	//csrf 비활성화
-		http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-				.requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
-				.csrf((csrf) -> csrf.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
-				.headers((headers) -> headers.addHeaderWriter(
-						new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
-				.formLogin((formLogin) -> formLogin.loginPage("/user/login").defaultSuccessUrl("/post/list"))
-				.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-						.logoutSuccessUrl("/").invalidateHttpSession(true));
+		http
+				.authorizeHttpRequests(authorizeRequests ->
+						authorizeRequests
+								.requestMatchers("/user/signup").permitAll() // 회원가입 엔드포인트에 대한 접근 허용
+								.anyRequest().permitAll() // 모든 엔드포인트에 대한 접근 허용
+				)
+				.csrf(AbstractHttpConfigurer::disable) // CSRF 보호 기능 비활성화
+				.headers(headers -> headers
+						.addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+				)
+				.formLogin(formLogin -> formLogin
+						.loginPage("/user/login").defaultSuccessUrl("/post/list")
+				)
+				.logout(logout -> logout
+						.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+						.logoutSuccessUrl("/").invalidateHttpSession(true)
+				);
 		return http.build();
 	}
+
+
 
 	@Bean
 	PasswordEncoder passwordEncoder() {
