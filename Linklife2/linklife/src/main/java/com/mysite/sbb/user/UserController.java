@@ -1,6 +1,7 @@
 package com.mysite.sbb.user;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,36 @@ public class UserController {
 
 	private final UserService userService;
 
+	@PostMapping("/signup")
+	public ResponseEntity<String> signup(@Valid @RequestBody UserCreateForm userCreateForm) {
+		try {
+			userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(), userCreateForm.getPassword1());
+			return ResponseEntity.ok("User registered successfully");
+		} catch (DataIntegrityViolationException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exists");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+	@GetMapping("/login")
+	public String login() {
+		return "login_form";
+	}
+
+//	@PostMapping("/signup")
+//	public ApiResponse signup(@Valid @RequestBody UserCreateForm userCreateForm) {
+//		try {
+//			userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(), userCreateForm.getPassword1());
+//			return new ApiResponse("success", "User registered successfully");
+//		} catch (DataIntegrityViolationException e) {
+//			return new ApiResponse("error", "User already exists");
+//		} catch (Exception e) {
+//			return new ApiResponse("error", e.getMessage());
+//		}
+//	}
+
+
+
 //	@GetMapping("/signup")
 //	public String signup(UserCreateForm userCreateForm) {
 //		return "signup_form";
@@ -29,17 +60,7 @@ public class UserController {
 //		return ResponseEntity.ok(user);
 //	}
 
-	@PostMapping("/signup")
-	public ApiResponse signup(@Valid @RequestBody UserCreateForm userCreateForm) {
-		try {
-			userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(), userCreateForm.getPassword1());
-			return new ApiResponse("success", "User registered successfully");
-		} catch (DataIntegrityViolationException e) {
-			return new ApiResponse("error", "User already exists");
-		} catch (Exception e) {
-			return new ApiResponse("error", e.getMessage());
-		}
-	}
+
 
 //	@PostMapping("/signup")
 //	public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult) {
@@ -67,8 +88,5 @@ public class UserController {
 //		return "redirect:/";
 //	}
 
-	@GetMapping("/login")
-	public String login() {
-		return "login_form";
-	}
+
 }
