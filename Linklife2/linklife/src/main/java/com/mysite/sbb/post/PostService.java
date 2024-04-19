@@ -1,5 +1,6 @@
 package com.mysite.sbb.post;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class PostService {
 	@SuppressWarnings("unused")
 	private Specification<Post> search(String kw) {
 		return new Specification<>() {
+			@Serial
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -48,6 +50,10 @@ public class PostService {
 						cb.like(u2.get("username"), "%" + kw + "%")); // 답변 작성자
 			}
 		};
+	}
+
+	public List<Post> getAllPosts() {
+		return postRepository.findAll();
 	}
 
 	public Page<Post> getList(int page, String kw) {
