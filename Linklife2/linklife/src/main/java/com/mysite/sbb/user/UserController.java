@@ -42,8 +42,8 @@ public class UserController {
 	@PostMapping("/signup")
 	public ResponseEntity<String> signup(@Valid @RequestBody UserCreateForm userCreateForm) {
 		try {
-			userService.create(userCreateForm.getUserid(), userCreateForm.getEmail(),
-					userCreateForm.getPassword1(),userCreateForm.getPhonenumber(),userCreateForm.getUsername());
+			userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(),
+					userCreateForm.getPassword1(),userCreateForm.getUserid(),userCreateForm.getPhonenumber());
 			return ResponseEntity.ok("User registered successfully");
 		} catch (DataIntegrityViolationException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exists");
