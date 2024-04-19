@@ -75,7 +75,7 @@ public class UserController {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			return ResponseEntity.ok().body("Login successful");
 		} catch (BadCredentialsException ex) {
-			// 로그인 실패 시 401 Unauthorized 상태 코드와 실패 메시지 반환
+			// 로그인 실패 시 401 Unauthorized 상태 코드와 함께 실패 메시지 반환
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
 		}
 	}
