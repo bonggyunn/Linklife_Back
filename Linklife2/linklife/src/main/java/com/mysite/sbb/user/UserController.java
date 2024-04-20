@@ -1,5 +1,6 @@
 package com.mysite.sbb.user;
 
+import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 //@RequiredArgsConstructor
 @RestController
@@ -38,18 +42,28 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("존재하지 않는 아이디 또는 비밀번호입니다.");
 		}
 	}
-
 	@PostMapping("/signup")
 	public ResponseEntity<String> signup(@Valid @RequestBody UserCreateForm userCreateForm) {
 		try {
 			userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(),
-					userCreateForm.getPassword1(),userCreateForm.getUserid(),userCreateForm.getPhonenumber());
+					userCreateForm.getPassword1(), userCreateForm.getUserid(), userCreateForm.getPhonenumber());
 			return ResponseEntity.ok("User registered successfully");
 		} catch (DataIntegrityViolationException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exists");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
+	}
+
+	@PostMapping("/session_create")
+	public Map<String, Object> createSession(@RequestBody LoginRequest loginRequest, HttpSession session) {
+		Map<String, Object> data = new HashMap<>();
+
+		session.setAttribute("user", loginRequest);
+
+		data.put("sessionId", session.getId());
+
+		return data;
 	}
 }
 
