@@ -33,6 +33,15 @@ public class Post {
 	@Column(columnDefinition = "TEXT")
 	private String content;
 
+	@Column
+	private String eventlocation;
+
+	@Column
+	private LocalDateTime eventStartDateTime;
+
+	@Column
+	private LocalDateTime eventEndDateTime;
+
 	private LocalDateTime createDate;
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)

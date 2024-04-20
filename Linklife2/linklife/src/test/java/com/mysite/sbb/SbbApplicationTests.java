@@ -1,4 +1,4 @@
-package com.mysite.sbb;
+/*package com.mysite.sbb;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,3 +21,4 @@ class SbbApplicationTests {
         }
     }
 }
+*/

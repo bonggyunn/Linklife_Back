@@ -1,6 +1,7 @@
 package com.mysite.sbb.post;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,15 +62,18 @@ public class PostController {
 		}
 
 //		@PreAuthorize("isAuthenticated()")
-//		@PostMapping("/create") 원본 소스
-//		public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult, Principal principal) {
-//			if (bindingResult.hasErrors()) {
-//				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
-//			}
+		@PostMapping("/create")
+		public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult)
+		{
+			if (bindingResult.hasErrors()) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
+			}
 //			SiteUser siteUser = this.userService.getUser(principal.getName());
-//			this.postService.create(postForm.getSubject(), postForm.getContent(), siteUser);
-//			return ResponseEntity.ok().build();
-//		}
+			SiteUser siteuser = null;
+			this.postService.create(postForm.getSubject(), postForm.getContent(), siteuser,
+					postForm.getEventStartDateTime(), postForm.getEventEndDateTime());
+			return ResponseEntity.ok().build();
+		}
 //	@GetMapping("/create")
 //public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult, Principal principal) {
 //	if (bindingResult.hasErrors()) {

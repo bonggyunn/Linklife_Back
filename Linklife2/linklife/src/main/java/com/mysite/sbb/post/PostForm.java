@@ -1,25 +1,30 @@
 package com.mysite.sbb.post;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class PostForm {
-	@NotEmpty(message = "제목은 필수항목입니다.")
+	@NotEmpty(message = "행사명은 필수항목입니다.")
 	@Size(max = 200)
 	private String subject;
 
-	@NotEmpty(message = "내용은 필수항목입니다.")
+	@NotEmpty(message = "행사 내용은 필수항목입니다.")
 	private String content;
 
+	// 행사 시작 날짜와 종료 날짜를 받을 필드
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	private LocalDateTime eventStartDateTime;
 
-//	private Integer id;
-//	private String authorUsername;
-//	private String createDate;
-//	private String modifyDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	private LocalDateTime eventEndDateTime;
 }
 

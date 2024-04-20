@@ -72,12 +72,14 @@ public class PostService {
 		}
 	}
 
-	public void create(String subject, String content, SiteUser user) {
+	public void create(String subject, String content, SiteUser user, LocalDateTime eventstartdatetime, LocalDateTime eventenddatetime) {
 		Post q = new Post();
 		q.setSubject(subject);
 		q.setContent(content);
 		q.setCreateDate(LocalDateTime.now());
 		q.setAuthor(user);
+		q.setEventStartDateTime(eventstartdatetime);
+		q.setEventEndDateTime(eventenddatetime);
 		this.postRepository.save(q);
 	}
 
