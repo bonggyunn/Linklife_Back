@@ -83,10 +83,12 @@ public class PostService {
 		this.postRepository.save(q);
 	}
 
-	public void modify(Post post, String subject, String content) {
+	public void update(Post post, String subject, String content, LocalDateTime eventstartdatetime, LocalDateTime eventenddatetime){
 		post.setSubject(subject);
 		post.setContent(content);
 		post.setModifyDate(LocalDateTime.now());
+		post.setEventStartDateTime(eventstartdatetime);
+		post.setEventEndDateTime(eventenddatetime);
 		this.postRepository.save(post);
 	}
 

@@ -30,14 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 //@ResponseBody
 public class PostController {
 
-//	public class PostController {
-		private final PostService postService;
-		private final UserService userService;
+	//	public class PostController {
+	private final PostService postService;
+	private final UserService userService;
 
-		public PostController(PostService postService, UserService userService) {
-			this.postService = postService;
-			this.userService = userService;
-		}
+	public PostController(PostService postService, UserService userService) {
+		this.postService = postService;
+		this.userService = userService;
+	}
 
 	@GetMapping("/all")
 	public ResponseEntity<List<Post>> getAllPosts() {
@@ -45,35 +45,66 @@ public class PostController {
 		return ResponseEntity.ok().body(allPosts);
 	}
 
-		@GetMapping("/list")
-		public ResponseEntity<Page<Post>> list(@RequestParam(value = "page", defaultValue = "0") int page,
-											   @RequestParam(value = "kw", defaultValue = "") String kw) {
-			Page<Post> paging = this.postService.getList(page, kw);
-			return ResponseEntity.ok(paging);
-		}
+	@GetMapping("/list")
+	public ResponseEntity<Page<Post>> list(@RequestParam(value = "page", defaultValue = "0") int page,
+										   @RequestParam(value = "kw", defaultValue = "") String kw) {
+		Page<Post> paging = this.postService.getList(page, kw);
+		return ResponseEntity.ok(paging);
+	}
 
-		@GetMapping("/detail/{id}")
-		public ResponseEntity<Post> detail(@PathVariable("id") Integer id) {
-			Post post = this.postService.getPost(id);
-			if (post == null) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.");
-			}
-			return ResponseEntity.ok(post);
+	@GetMapping("/detail/{id}")
+	public ResponseEntity<Post> detail(@PathVariable("id") Integer id) {
+		Post post = this.postService.getPost(id);
+		if (post == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.");
 		}
+		return ResponseEntity.ok(post);
+	}
 
-//		@PreAuthorize("isAuthenticated()")
-		@PostMapping("/create")
-		public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult)
-		{
-			if (bindingResult.hasErrors()) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
-			}
+	//		@PreAuthorize("isAuthenticated()")
+	@PostMapping("/create")
+	public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
+		}
 //			SiteUser siteUser = this.userService.getUser(principal.getName());
-			SiteUser siteuser = null;
-			this.postService.create(postForm.getSubject(), postForm.getContent(), siteuser,
-					postForm.getEventStartDateTime(), postForm.getEventEndDateTime());
-			return ResponseEntity.ok().build();
+		SiteUser siteuser = null;
+		this.postService.create(postForm.getSubject(), postForm.getContent(), siteuser,
+				postForm.getEventStartDateTime(), postForm.getEventEndDateTime());
+		return ResponseEntity.ok().build();
+	}
+
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> updatePost(@PathVariable("id") Integer id, @Valid @RequestBody PostForm postForm, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
 		}
+
+		// 게시글 ID로 기존 게시글을 가져옴
+		Post existingPost = postService.getPost(id);
+		if (existingPost == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "수정할 게시글을 찾을 수 없습니다.");
+		}
+
+		// 수정할 내용으로 게시글 업데이트
+		postService.update(existingPost, postForm.getSubject(), postForm.getContent(), postForm.getEventStartDateTime(), postForm.getEventEndDateTime());
+
+		return ResponseEntity.ok().build();
+	}
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<?> deletePost(@PathVariable("id") Integer id) {
+		// 게시글 ID로 기존 게시글을 가져옴
+		Post existingPost = postService.getPost(id);
+		if (existingPost == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 게시글을 찾을 수 없습니다.");
+		}
+
+		// 게시글 삭제
+		postService.delete(existingPost);
+
+		return ResponseEntity.ok().build();
+	}
+}
 //	@GetMapping("/create")
 //public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult, Principal principal) {
 //	if (bindingResult.hasErrors()) {
@@ -141,4 +172,4 @@ public class PostController {
 //		return ResponseEntity.ok().build();
 //	}
 //}
-}
+
