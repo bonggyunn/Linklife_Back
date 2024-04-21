@@ -34,7 +34,7 @@ public class Post {
 	private String content;
 
 	@Column
-	private String eventlocation;
+	private String eventLocation;
 
 	@Column
 	private LocalDateTime eventStartDateTime;

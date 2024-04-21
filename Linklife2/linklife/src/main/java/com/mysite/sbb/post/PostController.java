@@ -67,10 +67,10 @@ public class PostController {
 		if (bindingResult.hasErrors()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
 		}
-//			SiteUser siteUser = this.userService.getUser(principal.getName());
+// 작성자			SiteUser siteUser = this.userService.getUser(principal.getName());
 		SiteUser siteuser = null;
 		this.postService.create(postForm.getSubject(), postForm.getContent(), siteuser,
-				postForm.getEventStartDateTime(), postForm.getEventEndDateTime());
+				postForm.getEventStartDateTime(), postForm.getEventEndDateTime(), postForm.getEventLocation());
 		return ResponseEntity.ok().build();
 	}
 
