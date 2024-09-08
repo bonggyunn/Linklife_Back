@@ -1,5 +1,6 @@
 package com.mysite.sbb.user;
 
+import ch.qos.logback.core.model.Model;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,6 +35,7 @@ import java.io.IOException;
 public class UserController {
 
 	private final UserService userService;
+
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	@GetMapping("/signup")
@@ -67,18 +69,7 @@ public class UserController {
 		return "redirect:/";
 	}
 
-	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
-		try {
-			Authentication authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(username, password));
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			return ResponseEntity.ok().body("Login successful");
-		} catch (BadCredentialsException ex) {
-			// 로그인 실패 시 401 Unauthorized 상태 코드와 실패 메시지 반환
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
-		}
-	}
+
 
 
 	@GetMapping("/post/list")
