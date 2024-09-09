@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,14 +30,30 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 //@ResponseBody
 public class PostController {
-
 	//	public class PostController {
+
 	private final PostService postService;
 	private final UserService userService;
 
 	public PostController(PostService postService, UserService userService) {
 		this.postService = postService;
 		this.userService = userService;
+	}
+
+	@PostMapping("/create")
+	public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult,
+
+										@AuthenticationPrincipal SiteUser principal) {
+		if (bindingResult.hasErrors()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
+		}
+		if (principal == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+		}
+		SiteUser siteUser = principal;
+		this.postService.create(postForm.getSubject(), postForm.getContent(), siteUser,
+				postForm.getEventStartDateTime(), postForm.getEventEndDateTime(), postForm.getEventLocation());
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/all")
@@ -60,19 +77,7 @@ public class PostController {
 		}
 		return ResponseEntity.ok(post);
 	}
-
 	//		@PreAuthorize("isAuthenticated()")
-	@PostMapping("/create")
-	public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
-		}
-// 작성자			SiteUser siteUser = this.userService.getUser(principal.getName());
-		SiteUser siteuser = null;
-		this.postService.create(postForm.getSubject(), postForm.getContent(), siteuser,
-				postForm.getEventStartDateTime(), postForm.getEventEndDateTime(), postForm.getEventLocation());
-		return ResponseEntity.ok().build();
-	}
 
 	@PutMapping("/update/{id}")
 	public ResponseEntity<?> updatePost(@PathVariable("id") Integer id, @Valid @RequestBody PostForm postForm, BindingResult bindingResult) {
@@ -87,7 +92,8 @@ public class PostController {
 		}
 
 		// 수정할 내용으로 게시글 업데이트
-		postService.update(existingPost, postForm.getSubject(), postForm.getContent(), postForm.getEventStartDateTime(), postForm.getEventEndDateTime());
+		postService.update(existingPost, postForm.getSubject(), postForm.getContent(), postForm.getEventStartDateTime(),
+				postForm.getEventEndDateTime(), postForm.getEventLocation());
 
 		return ResponseEntity.ok().build();
 	}
