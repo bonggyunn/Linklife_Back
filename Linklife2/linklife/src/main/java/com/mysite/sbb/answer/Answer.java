@@ -3,6 +3,7 @@ package com.mysite.sbb.answer;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mysite.sbb.post.Post;
 import com.mysite.sbb.user.SiteUser;
 
@@ -29,6 +30,7 @@ public class Answer {
 
 	private LocalDateTime createDate;
 
+	@JsonIgnore
 	@ManyToOne
 	private Post post;
 

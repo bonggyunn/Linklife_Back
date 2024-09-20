@@ -58,7 +58,7 @@ public class PostService {
 
 	public Page<Post> getList(int page, String kw) {
 		List<Sort.Order> sorts = new ArrayList<>();
-		sorts.add(Sort.Order.desc("createDate"));
+		sorts.add(Sort.Order.asc("eventStartDateTime"));
 		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 		return this.postRepository.findAllByKeyword(kw, pageable);
 	}
@@ -72,25 +72,27 @@ public class PostService {
 		}
 	}
 
-	public void create(String subject, String content, SiteUser user,
+	public void create(String subject, String content, SiteUser author,
 					   LocalDateTime eventstartdatetime, LocalDateTime eventenddatetime, String eventlocation) {
 		Post q = new Post();
 		q.setSubject(subject);
 		q.setContent(content);
 		q.setCreateDate(LocalDateTime.now());
-		q.setAuthor(user);
+		q.setAuthor(author);
 		q.setEventStartDateTime(eventstartdatetime);
 		q.setEventEndDateTime(eventenddatetime);
 		q.setEventLocation(eventlocation);
 		this.postRepository.save(q);
 	}
 
-	public void update(Post post, String subject, String content, LocalDateTime eventstartdatetime, LocalDateTime eventenddatetime){
+	public void update(Post post, String subject, String content, LocalDateTime eventstartdatetime,
+					   LocalDateTime eventenddatetime, String eventlocation){
 		post.setSubject(subject);
 		post.setContent(content);
 		post.setModifyDate(LocalDateTime.now());
 		post.setEventStartDateTime(eventstartdatetime);
 		post.setEventEndDateTime(eventenddatetime);
+		post.setEventLocation(eventlocation);
 		this.postRepository.save(post);
 	}
 
