@@ -1,6 +1,8 @@
 package com.mysite.sbb;
 
 
+import com.mysite.sbb.user.JwtAuthenticationFilter;
+import com.mysite.sbb.user.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,6 +11,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,37 +28,36 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+	private final JwtTokenProvider jwtTokenProvider;
+	private final UserDetailsService userDetailsService;
+
+	public SecurityConfig(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
+		this.jwtTokenProvider = jwtTokenProvider;
+		this.userDetailsService = userDetailsService;
+	}
 
 	@Bean
-	PasswordEncoder passwordEncoder() {
+	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http
-				.authorizeHttpRequests(authorizeRequests ->
-						authorizeRequests
-								.requestMatchers("/user/signup").permitAll() // 회원가입 엔드포인트에 대한 접근 허용
-								.anyRequest().permitAll() // 모든 엔드포인트에 대한 접근 허용
-				)
-				.csrf(AbstractHttpConfigurer::disable) // CSRF 보호 기능 비활성화
-
-				.headers(headers -> headers
-						.addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
-				)
-				.formLogin(formLogin -> formLogin
-						.loginPage("/user/login").defaultSuccessUrl("/post/list")
-				)
-				.logout(logout -> logout
-						.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-						.logoutSuccessUrl("/").invalidateHttpSession(true)
-
-				);
-		return http.build();
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
 	}
 
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+				.csrf(AbstractHttpConfigurer::disable) // CSRF 설정 비활성화
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 정책 설정
+				.authorizeHttpRequests(authorize -> authorize
+						.requestMatchers("/api/auth/login", "/api/auth/signup").permitAll()
+						.anyRequest().authenticated()
+				);
 
+		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
-
+		return http.build();
+	}
 }
