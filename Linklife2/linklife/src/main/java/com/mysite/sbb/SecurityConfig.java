@@ -1,31 +1,21 @@
 package com.mysite.sbb;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.context.DelegatingSecurityContextRepository;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
-import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-
-    @Bean
+	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
@@ -35,26 +25,33 @@ public class SecurityConfig {
 		http
 				.authorizeHttpRequests(authorizeRequests ->
 						authorizeRequests
-								.requestMatchers("/user/signup").permitAll() // 회원가입 엔드포인트에 대한 접근 허용
-								.anyRequest().permitAll() // 모든 엔드포인트에 대한 접근 허용
+								// API 경로는 모두 인증 없이 접근 가능하게 설정
+								.requestMatchers("/user/api/**").permitAll()
+								// 로그인 페이지와 회원가입 페이지는 인증 없이 접근 가능
+								.requestMatchers("/user/signup", "/user/login").permitAll()
+								// 그 외 경로는 인증 필요
+								.anyRequest().authenticated()
 				)
-				.csrf(AbstractHttpConfigurer::disable) // CSRF 보호 기능 비활성화
-
+				.csrf(csrf -> csrf
+						.ignoringRequestMatchers("/user/api/**", "/post/**")  // API 경로에 대해 CSRF 비활성화
+				)
 				.headers(headers -> headers
-						.addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+						.frameOptions(frameOptions -> frameOptions.sameOrigin())  // H2 콘솔 frame 허용
 				)
 				.formLogin(formLogin -> formLogin
-						.loginPage("/user/login").defaultSuccessUrl("/post/list")
+						.loginPage("/user/login")  // 폼 기반 로그인 페이지 설정
+						.defaultSuccessUrl("/post/list", true)  // 로그인이 성공하면 해당 URL로 이동
+						.permitAll()  // 로그인 페이지 접근 허용
 				)
 				.logout(logout -> logout
-						.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-						.logoutSuccessUrl("/").invalidateHttpSession(true)
-
+						.logoutUrl("/user/logout")
+						.logoutSuccessUrl("/")  // 로그아웃 후 이동 경로
+				)
+				// 세션 관리 정책 추가: 세션이 필요할 때만 생성
+				.sessionManagement(sessionManagement ->
+						sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 				);
+
 		return http.build();
 	}
-
-
-
-
 }

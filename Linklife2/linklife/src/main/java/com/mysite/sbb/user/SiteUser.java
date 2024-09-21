@@ -1,16 +1,15 @@
 package com.mysite.sbb.user;
 
 import jakarta.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @Entity
-public class SiteUser {
+public class SiteUser implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +26,5 @@ public class SiteUser {
 	private String username;
 
 	private String phonenumber;
-
-//	@ManyToMany(mappedBy = "friends")
-//	private Set<SiteUser> friends;
 
 }

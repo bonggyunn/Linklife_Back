@@ -1,50 +1,55 @@
 package com.mysite.sbb.user;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-
 import java.util.HashMap;
 import java.util.Map;
 
-//@RequiredArgsConstructor
-@RestController
+//@RestController
+@Controller
+@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
 
 	private final UserService userService;
 
-	@Autowired
-	public UserController(UserService userService) {
-		this.userService = userService;
-	}
-
+	// REST API 기반 로그인 처리
 	@PostMapping("/api/login")
-	public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
-		String userid = loginRequest.getUserid();
+	public ResponseEntity<Map<String, Object>> apiLogin(@RequestBody LoginRequest loginRequest, HttpSession session) {
+		String username = loginRequest.getUsername();
 		String password = loginRequest.getPassword();
 
-		// 사용자 이름(userid)과 비밀번호(password)를 사용하여 로그인 시도
-		if (userService.isValidUser(userid, password)) {
-			// 세션 생성
-			session.setAttribute("user", loginRequest);
+		SiteUser user = userService.login(username, password);  // 사용자 정보를 반환
+		if (user != null) {
+			session.setAttribute("username", user.getUsername());
+			session.setMaxInactiveInterval(1800);  // 세션 유지 시간 30분 설정
 
-			// 세션 데이터 준비
 			Map<String, Object> data = new HashMap<>();
 			data.put("sessionId", session.getId());
 			data.put("message", "로그인 성공!");
 
-			// 세션 데이터 포함하여 성공 응답 반환
-			return ResponseEntity.ok(data.toString());
+			return ResponseEntity.ok(data);
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("존재하지 않는 아이디 또는 비밀번호입니다.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "존재하지 않는 아이디 또는 비밀번호입니다."));
 		}
 	}
+
+	// 폼 기반 로그인 페이지
+	@GetMapping("/login")
+	public String loginPage(Model model) {
+		model.addAttribute("loginRequest", new LoginRequest());
+		return "login_form";  // login_form.html 반환
+	}
+
+	// REST API 기반 회원가입 처리
 	@PostMapping("/signup")
 	public ResponseEntity<String> signup(@Valid @RequestBody UserCreateForm userCreateForm) {
 		try {
@@ -58,18 +63,10 @@ public class UserController {
 		}
 	}
 
-//	@PostMapping("/session_create")
-//	public Map<String, Object> createSession(@RequestBody LoginRequest loginRequest, HttpSession session) {
-//		Map<String, Object> data = new HashMap<>();
-//
-//		session.setAttribute("user", loginRequest);
-//
-//		data.put("sessionId", session.getId());
-//
-//		return data;
-//	}
+	// REST API 로그아웃 처리
+	@PostMapping("/api/logout")
+	public ResponseEntity<String> logout(HttpSession session) {
+		session.invalidate();  // 세션 무효화
+		return ResponseEntity.ok("로그아웃 성공!");
+	}
 }
-
-
-
-

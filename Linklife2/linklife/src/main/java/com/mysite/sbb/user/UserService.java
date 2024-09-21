@@ -16,6 +16,7 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
+	// 새로운 사용자 생성 메서드
 	public SiteUser create(String username, String email, String password, String userid, String phonenumber) {
 		SiteUser user = new SiteUser();
 		user.setUserid(userid);
@@ -27,29 +28,52 @@ public class UserService {
 		return user;
 	}
 
+	// username을 통해 사용자 정보 조회
 	public SiteUser getUser(String username) {
-		Optional<SiteUser> siteUser = this.userRepository.findByusername(username);
+		Optional<SiteUser> siteUser = this.userRepository.findByUsername(username);  // 대소문자 주의!
 		if (siteUser.isPresent()) {
 			return siteUser.get();
 		} else {
-
 			throw new DataNotFoundException("siteuser not found");
 		}
 	}
 
-
+	// username과 password가 유효한지 확인하는 메서드
 	public boolean isValidUser(String username, String password) {
-		// 데이터베이스에서 사용자를 조회합니다.
-		Optional<SiteUser> optionalUser = userRepository.findByusername(username);
+		Optional<SiteUser> optionalUser = userRepository.findByUsername(username);  // 대소문자 주의!
 
-		// 사용자가 존재하는지 확인합니다.
 		if (optionalUser.isPresent()) {
 			SiteUser user = optionalUser.get();
-			// 입력된 비밀번호와 저장된 비밀번호를 비교합니다.
 			return passwordEncoder.matches(password, user.getPassword());
 		} else {
-			// 사용자가 존재하지 않는 경우
 			return false;
 		}
+	}
+
+	// 사용자 ID로 사용자 정보 조회
+	public SiteUser getUserById(Long userId) {
+		return userRepository.findById(userId)
+				.orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다."));
+	}
+
+	// username을 통해 사용자 정보를 가져오는 메소드
+	public SiteUser getUserByUsername(String username) {
+		return userRepository.findByUsername(username)  // 대소문자 주의!
+				.orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다."));
+	}
+
+	// 로그인 메서드
+	public SiteUser login(String username, String password) {
+		Optional<SiteUser> userOptional = userRepository.findByUsername(username);  // 대소문자 주의!
+
+		if (userOptional.isPresent()) {
+			SiteUser user = userOptional.get();
+
+			// 비밀번호 확인
+			if (passwordEncoder.matches(password, user.getPassword())) {
+				return user;  // 비밀번호가 맞으면 사용자 반환
+			}
+		}
+		return null;  // 비밀번호가 틀리거나 사용자가 없으면 null 반환
 	}
 }

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,20 +42,20 @@ public class PostController {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult,
-
-										@AuthenticationPrincipal SiteUser principal) {
-		if (bindingResult.hasErrors()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
-		}
-		if (principal == null) {
+	public ResponseEntity<?> createPost(@RequestBody @Valid PostForm postForm, HttpSession session) {
+		String username = (String) session.getAttribute("user");  // 세션에서 username 확인
+		if (username == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 		}
-		SiteUser siteUser = principal;
-		this.postService.create(postForm.getSubject(), postForm.getContent(), siteUser,
+
+		// username을 기준으로 사용자를 조회
+		SiteUser user = userService.getUserByUsername(username);
+		postService.create(postForm.getSubject(), postForm.getContent(), user,
 				postForm.getEventStartDateTime(), postForm.getEventEndDateTime(), postForm.getEventLocation());
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok().body("게시글이 작성되었습니다.");
 	}
+
+
 
 	@GetMapping("/all")
 	public ResponseEntity<List<Post>> getAllPosts() {
