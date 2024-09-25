@@ -52,7 +52,7 @@ public class SecurityConfig {
 				.csrf(AbstractHttpConfigurer::disable) // CSRF 설정 비활성화
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 정책 설정
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers("/api/auth/login", "/api/auth/signup").permitAll()
+						.requestMatchers("/api/login", "/api/signup","/h2-console/**").permitAll()
 						.anyRequest().authenticated()
 				);
 
@@ -60,4 +60,5 @@ public class SecurityConfig {
 
 		return http.build();
 	}
+
 }

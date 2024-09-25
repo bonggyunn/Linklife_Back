@@ -44,7 +44,7 @@ public class UserController {
 
 		return ResponseEntity.ok(new ApiResponse(token));
 	}
-	@PostMapping("/signup")
+	@PostMapping("/api/signup")
 	public ResponseEntity<String> signup(@Valid @RequestBody UserCreateForm userCreateForm) {
 		try {
 			userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(),
