@@ -3,6 +3,8 @@ package com.mysite.sbb;
 
 import com.mysite.sbb.user.JwtAuthenticationFilter;
 import com.mysite.sbb.user.JwtTokenProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,13 +55,19 @@ public class SecurityConfig {
 				.csrf(AbstractHttpConfigurer::disable) // CSRF 설정 비활성화
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 정책 설정
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers("/api/login", "/api/signup","/h2-console/**").permitAll()
+						.requestMatchers("/api/login", "/api/signup", "/h2-console/**").permitAll()
 						.anyRequest().authenticated()
 				);
 
 		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
+	}
+	@Bean
+	@ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
+	public WebSecurityCustomizer configureH2ConsoleEnable() {
+		return web -> web.ignoring()
+				.requestMatchers(PathRequest.toH2Console());
 	}
 
 }
