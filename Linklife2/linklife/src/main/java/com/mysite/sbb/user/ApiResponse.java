@@ -9,7 +9,7 @@ public class ApiResponse {
     private String status;
     private String message;
 
-    public ApiResponse(String status, String message) {
+    public ApiResponse(String status) {
         this.status = status;
         this.message = message;
     }

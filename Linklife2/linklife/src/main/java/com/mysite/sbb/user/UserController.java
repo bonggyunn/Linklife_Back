@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -14,38 +18,33 @@ import java.util.Map;
 
 //@RequiredArgsConstructor
 @RestController
-//@RequestMapping("/user")
+//@RequestMapping("/api")
 public class UserController {
 
 	private final UserService userService;
+	private final AuthenticationManager authenticationManager;
+	private final JwtTokenProvider jwtTokenProvider;
 
-	@Autowired
-	public UserController(UserService userService) {
+    @Autowired
+	public UserController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserSecurityService userSecurityService) {
 		this.userService = userService;
-	}
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
 	@PostMapping("/api/login")
-	public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
-		String userid = loginRequest.getUserid();
-		String password = loginRequest.getPassword();
+	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+		);
 
-		// 사용자 이름(userid)과 비밀번호(password)를 사용하여 로그인 시도
-		if (userService.isValidUser(userid, password)) {
-			// 세션 생성
-			session.setAttribute("user", loginRequest);
+		// Authentication 객체에서 principal을 가져와서 UserDetails로 캐스팅
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String token = jwtTokenProvider.createToken(userDetails.getUsername(), userDetails.getAuthorities().toString());
 
-			// 세션 데이터 준비
-			Map<String, Object> data = new HashMap<>();
-			data.put("sessionId", session.getId());
-			data.put("message", "로그인 성공!");
-
-			// 세션 데이터 포함하여 성공 응답 반환
-			return ResponseEntity.ok(data.toString());
-		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("존재하지 않는 아이디 또는 비밀번호입니다.");
-		}
+		return ResponseEntity.ok(new ApiResponse(token));
 	}
-	@PostMapping("/signup")
+	@PostMapping("/api/signup")
 	public ResponseEntity<String> signup(@Valid @RequestBody UserCreateForm userCreateForm) {
 		try {
 			userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(),
