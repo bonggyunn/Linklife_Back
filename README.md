@@ -1,6 +1,17 @@
 # 주요 기능
 
-## 1. 회원가입 API
+## 화면 구현
+
+### 1. 회원가입
+
+### 2. 로그인
+
+### 3. 메인 화면
+
+### 4. 타임라인
+
+
+### 1. 회원가입 API
     @PostMapping("/api/signup")
 	public ResponseEntity<String> signup(@Valid @RequestBody UserCreateForm userCreateForm) {
 		try {
@@ -14,7 +25,7 @@
 		}
 	}
 
-## 2. 로그인 API
+### 2. 로그인 API
     @PostMapping("/api/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
@@ -28,7 +39,7 @@
 		return ResponseEntity.ok(new ApiResponse(token));
 	}
 
-## 3. 로그인 유지 - JWT  
+### 3. 로그인 유지 - JWT  
 #### JwtTokenProvider.java : 토큰 생성
     @Component
     public class JwtTokenProvider {
@@ -76,7 +87,7 @@
         filterChain.doFilter(request, response);
     }
 
-## 4. 게시글 작성
+### 4. 게시글 작성
     @PostMapping("/create")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult,
