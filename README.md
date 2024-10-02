@@ -9,7 +9,7 @@
 ### 3. 메인 화면
 
 ### 4. 타임라인
-
+![타임라인](https://github.com/user-attachments/assets/76d784d7-e5b7-4516-99da-d839505126ce)
 
 ### 1. 회원가입 API
     @PostMapping("/api/signup")
