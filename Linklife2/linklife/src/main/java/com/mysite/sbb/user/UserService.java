@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import com.mysite.sbb.DataNotFoundException;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RequiredArgsConstructor
 @Service
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserService {
 
 	private final UserRepository userRepository;

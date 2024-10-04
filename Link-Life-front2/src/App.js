@@ -39,14 +39,7 @@ function App() {
 
   const [message, setMessage] = useState([]);
 
-  const [hello, setHello] = useState("");
 
-  useEffect(() => {
-    axios
-      .get("/hello")
-      .then((response) => setHello(response.data))
-      .catch((error) => console.log(error));
-  }, []);
 
   return (
     <>
@@ -68,7 +61,7 @@ function App() {
           />
 
           {/* 2. 로그인 */}
-          <Route exact path="/login" element={<Login />} />
+          <Route exact path="/api/login" element={<Login />} />
 
           {/* 3. 개인정보수정 화면 */}
           <Route exact path="/informationUpdate" element={<Update />} />

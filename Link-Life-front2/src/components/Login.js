@@ -4,16 +4,17 @@ import picture_logoOnly from '../images/logo_Link-Life(4)_IconOnly.png';
 import picture_textOnly from '../images/logo_Link-Life(3)_textonly.png';
 import logo_google from '../images/logo_google.svg';
 import logo_kakao from '../images/logo_kakao.svg';
+import axios from "axios";
 
 const User = {
-  Id: "whyewon",
-  pw: "woo1234",
+  username: "whyewon",
+  password: "woo1234",
 };
 
 const Login = () => {
 
-  const [Id, setId] = useState("");
-  const [pw, setPw] = useState("");
+  const [username, setId] = useState("");
+  const [password, setPw] = useState("");
 
   const [IdValid, setIdValid] = useState(false);
   const [pwValid, setPwValid] = useState(false);
@@ -35,11 +36,20 @@ const Login = () => {
   //   setPw(e.target.value);
   // };
 
-  const onClickConfirmButton = () => {
-    if (Id === User.Id && pw === User.pw) {
-      alert("로그인에 성공했습니다.");
-    } else {
-      alert("등록되지 않은 회원입니다.");
+  const onClickConfirmButton = async () => {
+    try {
+      const response = await axios.post("/api/login", {
+        username,
+        password,
+      });
+      if (response.status === 200) {
+        alert("로그인에 성공했습니다.");
+      } else {
+        alert("로그인에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("로그인 요청 중 오류 발생:", error);
+      alert("로그인 중 오류가 발생했습니다.");
     }
   };
 
@@ -52,9 +62,9 @@ const Login = () => {
   }, [IdValid, pwValid]);
 
   useEffect(() => {
-    setIdValid(Id.length > 0);
-    setPwValid(pw.length > 0);
-  }, [Id, pw]);
+    setIdValid(username.length > 0);
+    setPwValid(password.length > 0);
+  }, [username, password]);
 
 
   return (
@@ -105,7 +115,7 @@ const Login = () => {
                     <input
                       className="l-input"
                       placeholder="아이디"
-                      value={Id}
+                      value={username}
                       onChange={handleId}
                     />
                   </div>
@@ -116,7 +126,7 @@ const Login = () => {
                       className="l-input"
                       type="password"
                       placeholder="비밀번호"
-                      value={pw}
+                      value={password}
                       onChange={handlePw}
                     />
                   </div>
