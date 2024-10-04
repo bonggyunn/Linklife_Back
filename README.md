@@ -1,6 +1,30 @@
 # 주요 기능
 
-## 1. 회원가입 API
+## 화면 구현
+
+### 1. 회원가입
+---
+![스크린샷 2024-10-02 153645](https://github.com/user-attachments/assets/1f395d08-662f-4999-8d46-bbca8b10073b)
+---
+
+### 2. 로그인
+---
+![스크린샷 2024-10-02 153534](https://github.com/user-attachments/assets/46deaf32-14e6-4ab2-9388-eec4652ee6fe)
+---
+
+### 3. 메인 화면
+---
+![스크린샷 2024-10-02 153257](https://github.com/user-attachments/assets/3a1bb902-afd0-4e63-8c64-2175223f1aaf)
+---
+
+### 4. 타임라인
+---
+![타임라인](https://github.com/user-attachments/assets/76d784d7-e5b7-4516-99da-d839505126ce)
+---
+---
+## 기능 구현
+
+### 1. 회원가입 API
     @PostMapping("/api/signup")
 	public ResponseEntity<String> signup(@Valid @RequestBody UserCreateForm userCreateForm) {
 		try {
@@ -14,7 +38,7 @@
 		}
 	}
 
-## 2. 로그인 API
+### 2. 로그인 API
     @PostMapping("/api/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
@@ -28,7 +52,7 @@
 		return ResponseEntity.ok(new ApiResponse(token));
 	}
 
-## 3. 로그인 유지 - JWT  
+### 3. 로그인 유지 - JWT  
 #### JwtTokenProvider.java : 토큰 생성
     @Component
     public class JwtTokenProvider {
@@ -76,7 +100,7 @@
         filterChain.doFilter(request, response);
     }
 
-## 4. 게시글 작성
+### 4. 게시글 작성
     @PostMapping("/create")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult,
