@@ -5,6 +5,7 @@ import picture_textOnly from '../images/logo_Link-Life(3)_textonly.png';
 import logo_google from '../images/logo_google.svg';
 import logo_kakao from '../images/logo_kakao.svg';
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const User = {
   username: "whyewon",
@@ -12,6 +13,8 @@ const User = {
 };
 
 const Login = () => {
+
+  const navigation = useNavigate()
 
   const [username, setId] = useState("");
   const [password, setPw] = useState("");
@@ -43,7 +46,10 @@ const Login = () => {
         password,
       });
       if (response.status === 200) {
+        const token = response.data.status;  // 백엔드에서 전달받은 토큰
+        localStorage.setItem("token", token);  // 로컬 스토리지에 토큰 저장
         alert("로그인에 성공했습니다.");
+        navigation("/")
       } else {
         alert("로그인에 실패했습니다.");
       }
@@ -97,7 +103,7 @@ const Login = () => {
           minHeight: '870px',
         }}
         >
-          <form className='py-20 px-11'>
+          <div className='py-20 px-11'>
             <fieldset
             style={{
               width:'600px', // 배경이미지 크기(너비)
@@ -132,32 +138,40 @@ const Login = () => {
                   </div>
                 </div>
 
-                <div>
-                  {/* 로그인 버튼 */}
-                  <button
-                    onClick={onClickConfirmButton}
-                    disabled={notAllow}
+              <div>
+                {/* 로그인 버튼 */}
+                {/*<button*/}
+                {/*    onClick={onClickConfirmButton}*/}
+                {/*    disabled={notAllow}*/}
+                {/*    className="l-loginButton"*/}
+                {/*>로그인*/}
+                {/*</button>*/}
+                <div
+                    onClick={()=> !notAllow && onClickConfirmButton()}
                     className="l-loginButton"
-                  >로그인</button>
-                  
-                  {/* 카카오톡 로그인 버튼 */}
-                  <button className="flex items-center justify-center l-kakaoButton">
-                    <img src={logo_kakao} alt='logo_kakao' className='mr-3 w-11 h-11' />
-                    카카오톡 아이디로 로그인</button>
-                  
-                  {/* 구글 로그인 버튼 */}
-                  <button className="flex items-center justify-center l-googleButton">
-                    <img src={logo_google} alt='logo_google' className='mr-3 w-7 h-7' />
-                    구글 아이디로 로그인</button>
+                >로그인
                 </div>
 
-                <div className='flex justify-center mt-6'>
-                  <p>
-                    계정이 없으시다면? <a href='' className='l-signupButton'>회원가입</a>
-                  </p>
+                {/* 카카오톡 로그인 버튼 */}
+                <button className="flex items-center justify-center l-kakaoButton">
+                  <img src={logo_kakao} alt='logo_kakao' className='mr-3 w-11 h-11'/>
+                  카카오톡 아이디로 로그인
+                </button>
+
+                {/* 구글 로그인 버튼 */}
+                <button className="flex items-center justify-center l-googleButton">
+                  <img src={logo_google} alt='logo_google' className='mr-3 w-7 h-7'/>
+                  구글 아이디로 로그인
+                </button>
+              </div>
+
+              <div className='flex justify-center mt-6'>
+                <p>
+                  계정이 없으시다면? <a href='' className='l-signupButton'>회원가입</a>
+                </p>
                 </div>
             </fieldset>
-          </form>
+          </div>
         </div>
       </div>
     </>

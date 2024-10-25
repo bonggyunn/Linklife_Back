@@ -392,6 +392,8 @@ display: none;
 
 .l-loginButton {
   height: 60px;
+    text-align: center;
+    align-content: center;
   border: none;
   font-size: 16px;
   letter-spacing: 2px;

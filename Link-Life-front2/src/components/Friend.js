@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import NavbarFull_Friend from './NavbarFull_Friend'
 
 import { useState } from 'react'
@@ -9,6 +9,7 @@ import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 import Modal from './Modal'
 import Tabs from './Tabs'
 import picture_user from '../images/user.jpeg';
+import {useNavigate, useNavigation} from "react-router-dom";
 
 // 즐겨찾기 및 친구 탭 관리
 const dataCollection_tab1 = [
@@ -75,6 +76,8 @@ const Friend = () => {
 
   // modal을 위한 state
   const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate()
+  const token = localStorage.getItem('token')
 
   // accordion(즐겨찾기; bookmark)를 위한 state 
   // -> userState(-1, 0...): 접기, userState(0): 펴기
@@ -97,6 +100,14 @@ const Friend = () => {
       }    
       setActiveFriendAccordion(index);
   }
+
+  useEffect(() => {
+    if(!token){
+      alert('로그인이 필요합니다.')
+      navigate('/api/login')
+    }
+  }, [token]);
+
 
   return (
     <>

@@ -1,9 +1,11 @@
 import React from 'react'
 import { FaSearch, FaCalendarAlt, FaHashtag, FaAngleLeft, FaUserCircle, FaUsers, FaUserPlus} from 'react-icons/fa'
 import logo from '../images/logo_Link-Life(1).png'
-import { Link } from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 
 const NavbarFull_Friend = () => {
+    const navigate = useNavigate()
+
   return (
     <nav className='flex justify-between px-4 py-3 bg-white border'>
       <Link to="/introduceTeam">
@@ -63,7 +65,10 @@ const NavbarFull_Friend = () => {
               <FaUserCircle className='w-6 h-6 mt-1'/>
               <div className='absolute right-0 z-10 hidden w-20 bg-gray-200 rounded-lg shadow group-hover:block group-focus:block top-full'>
                   <ul className='py-2 text-xs text-gray-950'>
-                      <li><a href='' className='hover:text-blue-600 hover:font-bold'>로그아웃</a></li>
+                      <li onClick={()=> {
+                          localStorage.removeItem('token')
+                          navigate('/api/login')
+                      }}>로그아웃</li>
                   </ul>
               </div>
           </button>
