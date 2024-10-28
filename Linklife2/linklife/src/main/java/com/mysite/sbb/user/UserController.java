@@ -39,7 +39,15 @@ public class UserController {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		String token = jwtTokenProvider.createToken(userDetails.getUsername(), userDetails.getAuthorities().toString());
 
-		return ResponseEntity.ok(new ApiResponse(token));
+		// 사용자 정보 추가
+		SiteUser siteUser = userService.getUser(userDetails.getUsername());
+		String username = siteUser.getUsername();
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("token", token);
+		response.put("name", siteUser.getUsername());
+		//response.put("profileImage", siteUser.getProfileImage());  // 프로필 이미지 URL
+		return ResponseEntity.ok(new ApiResponse("200", token, username));
 	}
 
 	@PostMapping("/api/signup")

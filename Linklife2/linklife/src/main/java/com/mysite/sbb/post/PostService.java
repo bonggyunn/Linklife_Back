@@ -62,6 +62,12 @@ public class PostService {
 		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 		return this.postRepository.findAllByKeyword(kw, pageable);
 	}
+	public Page<Post> getList(int page, int user_id) {
+		List<Sort.Order> sorts = new ArrayList<>();
+		sorts.add(Sort.Order.asc("eventStartDateTime"));
+		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+		return this.postRepository.findAllByKeywordAndUserId(user_id, pageable);
+	}
 
 	public Post getPost(Integer id) {
 		Optional<Post> post = this.postRepository.findById(id);
