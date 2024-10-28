@@ -46,8 +46,8 @@ const Login = () => {
         password,
       });
       if (response.status === 200) {
-        const token = response.data.status;  // 백엔드에서 전달받은 토큰
-        localStorage.setItem("token", token);  // 로컬 스토리지에 토큰 저장
+        localStorage.setItem("token", response.data.token);  // 로컬 스토리지에 토큰 저장
+        localStorage.setItem("name", response.data.username)
         alert("로그인에 성공했습니다.");
         navigation("/")
       } else {
@@ -83,11 +83,11 @@ const Login = () => {
         {/* <div className='py-12 px-11'>
           <h1 className='text-3xl font-bold text-black'>회원가입</h1>
         </div> */}
-        
+
         {/* 0. 회원가입 - 좌측(left) 화면 */}
         <div className='flex justify-center pt-48'
         style={{
-          width:'960px', 
+          width:'960px',
           minHeight: '870px',
         }}>
           <div>
@@ -99,7 +99,7 @@ const Login = () => {
         {/* 0. 회원가입 - 우측(right) 화면 */}
         <div
         style={{
-          width:'960px', 
+          width:'960px',
           minHeight: '870px',
         }}
         >
@@ -113,7 +113,7 @@ const Login = () => {
               boxShadow: '0px 4px 4px 0px #757575',
             }}
             >
-              
+
                 <div className="l-titleWrap">Link-Life, 인생을 연결합니다 !</div>
                 <div className="l-contentWrap">
                   {/* 아이디(id) */}

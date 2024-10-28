@@ -64,6 +64,12 @@ public class PostController {
 		Page<Post> paging = this.postService.getList(page, kw);
 		return ResponseEntity.ok(paging);
 	}
+	@GetMapping("/list/{id}")
+	public ResponseEntity<Page<Post>> listWithId(@RequestParam(value = "page", defaultValue = "0") int page,
+												 @PathVariable("id") Integer id) {
+		Page<Post> paging = this.postService.getList(page, id);
+		return ResponseEntity.ok(paging);
+	}
 
 	@GetMapping("/detail/{id}")
 	public ResponseEntity<Post> detail(@PathVariable("id") Integer id) {

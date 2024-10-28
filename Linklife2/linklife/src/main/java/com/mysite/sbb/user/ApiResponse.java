@@ -3,14 +3,20 @@ package com.mysite.sbb.user;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+
 @Getter
 @Setter
 public class ApiResponse {
     private String status;
     private String message;
+    private String token;
+    private String username;
 
-    public ApiResponse(String status) {
+    public ApiResponse(String status, String token, String username) {
         this.status = status;
+        this.token = token;
+        this.username = username;
         this.message = message;
     }
 
