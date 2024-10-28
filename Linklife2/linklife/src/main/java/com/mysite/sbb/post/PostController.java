@@ -1,12 +1,10 @@
 package com.mysite.sbb.post;
 
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
@@ -21,11 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/post")
-//@RequiredArgsConstructor
 @RestController
-//@ResponseBody
 public class PostController {
-	//	public class PostController {
 
 	private final PostService postService;
 	private final UserService userService;
@@ -34,6 +29,7 @@ public class PostController {
 		this.postService = postService;
 		this.userService = userService;
 	}
+
 	@PostMapping("/create")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult,
@@ -44,13 +40,22 @@ public class PostController {
 		if (userDetails == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 		}
+
+		// 사용자 정보 가져오기
 		SiteUser siteUser = this.userService.getUser(userDetails.getUsername());
-		this.postService.create(postForm.getSubject(), postForm.getContent(), siteUser,
-				postForm.getEventStartDateTime(), postForm.getEventEndDateTime(), postForm.getEventLocation());
+
+		// PostService의 create 메서드 호출하여 게시글 생성
+		this.postService.create(
+				postForm.getSubject(),
+				postForm.getContent(),
+				siteUser,
+				postForm.getEventStartDateTime(),
+				postForm.getEventEndDateTime(),
+				postForm.getEventLocation()
+		);
+
 		return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 생성되었습니다.");
 	}
-
-
 
 	@GetMapping("/all")
 	public ResponseEntity<List<Post>> getAllPosts() {
@@ -64,12 +69,6 @@ public class PostController {
 		Page<Post> paging = this.postService.getList(page, kw);
 		return ResponseEntity.ok(paging);
 	}
-	@GetMapping("/list/{id}")
-	public ResponseEntity<Page<Post>> listWithId(@RequestParam(value = "page", defaultValue = "0") int page,
-												 @PathVariable("id") Integer id) {
-		Page<Post> paging = this.postService.getList(page, id);
-		return ResponseEntity.ok(paging);
-	}
 
 	@GetMapping("/detail/{id}")
 	public ResponseEntity<Post> detail(@PathVariable("id") Integer id) {
@@ -79,7 +78,6 @@ public class PostController {
 		}
 		return ResponseEntity.ok(post);
 	}
-	//		@PreAuthorize("isAuthenticated()")
 
 	@PutMapping("/update/{id}")
 	public ResponseEntity<?> updatePost(@PathVariable("id") Integer id, @Valid @RequestBody PostForm postForm, BindingResult bindingResult) {
@@ -87,32 +85,56 @@ public class PostController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "입력 데이터가 올바르지 않습니다.");
 		}
 
-		// 게시글 ID로 기존 게시글을 가져옴
 		Post existingPost = postService.getPost(id);
 		if (existingPost == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "수정할 게시글을 찾을 수 없습니다.");
 		}
 
-		// 수정할 내용으로 게시글 업데이트
-		postService.update(existingPost, postForm.getSubject(), postForm.getContent(), postForm.getEventStartDateTime(),
-				postForm.getEventEndDateTime(), postForm.getEventLocation());
+		postService.update(
+				existingPost,
+				postForm.getSubject(),
+				postForm.getContent(),
+				postForm.getEventStartDateTime(),
+				postForm.getEventEndDateTime(),
+				postForm.getEventLocation()
+		);
 
 		return ResponseEntity.ok().build();
 	}
+
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> deletePost(@PathVariable("id") Integer id) {
-		// 게시글 ID로 기존 게시글을 가져옴
 		Post existingPost = postService.getPost(id);
 		if (existingPost == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 게시글을 찾을 수 없습니다.");
 		}
 
-		// 게시글 삭제
 		postService.delete(existingPost);
-
 		return ResponseEntity.ok().build();
 	}
+
+	@PostMapping("/mypage/post")
+	public ResponseEntity<String> createPostOnMyPage(@AuthenticationPrincipal UserDetails userDetails,
+													 @RequestBody PostForm postForm) {
+		if (userDetails == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+		}
+
+		SiteUser siteUser = this.userService.getUser(userDetails.getUsername());
+
+		postService.create(
+				postForm.getSubject(),
+				postForm.getContent(),
+				siteUser,
+				postForm.getEventStartDateTime(),
+				postForm.getEventEndDateTime(),
+				postForm.getEventLocation()
+		);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 성공적으로 작성되었습니다.");
+	}
 }
+
 //	@GetMapping("/create")
 //public ResponseEntity<?> postCreate(@Valid @RequestBody PostForm postForm, BindingResult bindingResult, Principal principal) {
 //	if (bindingResult.hasErrors()) {
