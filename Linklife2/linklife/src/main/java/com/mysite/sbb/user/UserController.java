@@ -75,13 +75,14 @@ public class UserController {
 		if (obj.isPresent()) {
 			SiteUser member = obj.get();
 			Map<String, Object> response = new HashMap<>();
-			response.put("member", member);
-			response.put("menu", menu);
+			response.put("name", member.getUsername());  // 이름만 포함
+			response.put("menu", menu);  // 필요한 경우 menu 정보 포함
 			return ResponseEntity.ok(response);
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자 정보를 찾을 수 없습니다.");
 		}
 	}
+
 }
 
 
