@@ -1,54 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import Modal from "./Modal";
 import Event from "./Event";
 
 const MyTimeLine = () => {
-    // 모달 창 상태 관리 (열기/닫기)
     const [modalOpen, setModalOpen] = useState(false);
-    // 게시글 목록 관리
     const [posts, setPosts] = useState([]);
-    // 게시글 제목 상태
     const [title, setTitle] = useState("");
-    // 게시글 내용 상태
     const [eventContent, setEventContent] = useState("");
+
+    // 초기 로드 시 게시글 목록 가져오기
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const response = await fetch("/post/list?page=0");
+                if (response.ok) {
+                    const data = await response.json();
+                    // 서버에서 받아온 게시글 목록을 posts 상태로 설정
+                    setPosts(data.content); // Page 객체의 content 속성에서 게시글 배열 가져옴
+                } else {
+                    console.error("게시글 목록 가져오기 실패:", response.statusText);
+                }
+            } catch (error) {
+                console.error("오류 발생:", error);
+            }
+        };
+
+        fetchPosts();
+    }, []);
 
     // 게시글 추가 함수 - 서버에 POST 요청을 보내 게시글을 등록
     const handleAddPost = async () => {
-        // 제목과 내용을 입력했는지 확인
         if (!title || !eventContent) {
             alert("제목과 내용을 입력해주세요.");
             return;
         }
 
         try {
-            // 로그인 인증 토큰 가져오기
             const token = localStorage.getItem("token");
-            // 서버에 POST 요청으로 게시글 데이터 전송
             const response = await fetch("/post/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, // 인증 토큰 추가
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     subject: title,
                     content: eventContent,
-                    eventStartDateTime: "2023-12-01T10:00:00", // 임시 데이터 (필요 시 변경)
-                    eventEndDateTime: "2023-12-01T12:00:00",   // 임시 데이터 (필요 시 변경)
-                    eventLocation: "서울",                    // 임시 데이터 (필요 시 변경)
+                    eventStartDateTime: "2023-12-01T10:00:00",
+                    eventEndDateTime: "2023-12-01T12:00:00",
+                    eventLocation: "서울",
                 }),
             });
 
-            // 요청이 성공적일 때
             if (response.ok) {
-                const data = await response.json();
+                const newPost = { title, content: eventContent };
                 alert("게시글이 성공적으로 등록되었습니다.");
-                // 게시글 목록에 새 게시글 추가
-                setPosts([...posts, { title, content: eventContent }]);
-                // 모달 창 닫기
+                // 서버에 저장된 새 게시글을 posts 상태에 추가
+                setPosts([newPost, ...posts]); // 새 게시글이 맨 앞에 오도록 추가
                 setModalOpen(false);
-                // 입력 필드 초기화
                 setTitle("");
                 setEventContent("");
             } else {
@@ -124,7 +134,7 @@ const MyTimeLine = () => {
                         border: "1px solid #CFCFCF",
                         marginLeft: "44px",
                     }}
-                    onClick={() => setModalOpen(true)} // 버튼 클릭 시 모달 열기
+                    onClick={() => setModalOpen(true)}
                 >
                     <div className="flex items-center justify-center w-full h-full bg-gray-100 hover:bg-gray-200">
                         <FiPlusCircle className="w-10 h-10" />
@@ -135,8 +145,8 @@ const MyTimeLine = () => {
                 {modalOpen && (
                     <div className="-ml-96 bg-black/40" style={{ marginTop: "-410px" }}>
                         <Modal
-                            title={"행사 게시글 등록"} // 모달 제목
-                            onClose={() => setModalOpen(false)} // 닫기 버튼 클릭 시 모달 닫기
+                            title={"행사 게시글 등록"}
+                            onClose={() => setModalOpen(false)}
                             footer={
                                 <div className="flex justify-end gap-2 py-3">
                                     <button
@@ -148,7 +158,7 @@ const MyTimeLine = () => {
                                             fontSize: "14px",
                                             marginLeft: "15px",
                                         }}
-                                        onClick={handleAddPost} // 등록 버튼 클릭 시 handleAddPost 호출
+                                        onClick={handleAddPost}
                                     >
                                         등록
                                     </button>
