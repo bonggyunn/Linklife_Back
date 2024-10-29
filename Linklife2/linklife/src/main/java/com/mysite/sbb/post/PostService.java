@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
 
 	private final PostRepository postRepository;
-
+ 
 	@SuppressWarnings("unused")
 	private Specification<Post> search(String kw) {
 		return new Specification<>() {

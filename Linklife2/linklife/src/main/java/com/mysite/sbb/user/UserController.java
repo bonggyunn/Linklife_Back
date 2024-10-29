@@ -1,6 +1,5 @@
 package com.mysite.sbb.user;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -8,51 +7,51 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-
+import java.util.Optional;
 import java.util.HashMap;
 import java.util.Map;
 
-//@RequiredArgsConstructor
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class UserController {
 
 	private final UserService userService;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final UserRepository userRepository;
 
-    @Autowired
-	public UserController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserSecurityService userSecurityService) {
+	@Autowired
+	public UserController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
 		this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+		this.authenticationManager = authenticationManager;
+		this.jwtTokenProvider = jwtTokenProvider;
+		this.userRepository = userRepository;
+	}
 
-	@PostMapping("/api/login")
+	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
 		);
 
-		// Authentication 객체에서 principal을 가져와서 UserDetails로 캐스팅
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		String token = jwtTokenProvider.createToken(userDetails.getUsername(), userDetails.getAuthorities().toString());
 
-		// 사용자 정보 추가
 		SiteUser siteUser = userService.getUser(userDetails.getUsername());
 		String username = siteUser.getUsername();
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("token", token);
 		response.put("name", siteUser.getUsername());
-		//response.put("profileImage", siteUser.getProfileImage());  // 프로필 이미지 URL
 		return ResponseEntity.ok(new ApiResponse("200", token, username));
 	}
-	@PostMapping("/api/signup")
+
+	@PostMapping("/signup")
 	public ResponseEntity<String> signup(@Valid @RequestBody UserCreateForm userCreateForm) {
 		try {
 			userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(),
@@ -65,18 +64,25 @@ public class UserController {
 		}
 	}
 
-//	@PostMapping("/session_create")
-//	public Map<String, Object> createSession(@RequestBody LoginRequest loginRequest, HttpSession session) {
-//		Map<String, Object> data = new HashMap<>();
-//
-//		session.setAttribute("user", loginRequest);
-//
-//		data.put("sessionId", session.getId());
-//
-//		return data;
-//	}
+	// MyPage 프로필 정보 JSON으로 반환
+	@GetMapping("/mypage")
+	public ResponseEntity<?> mypageGET(@AuthenticationPrincipal UserDetails user, @RequestParam(name = "menu", defaultValue = "1") int menu) {
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+		}
+
+		Optional<SiteUser> obj = userRepository.findByUsername(user.getUsername());
+		if (obj.isPresent()) {
+			SiteUser member = obj.get();
+			Map<String, Object> response = new HashMap<>();
+			response.put("name", member.getUsername());  // 이름만 포함
+			response.put("menu", menu);  // 필요한 경우 menu 정보 포함
+			return ResponseEntity.ok(response);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자 정보를 찾을 수 없습니다.");
+		}
+	}
+
 }
-
-
 
 

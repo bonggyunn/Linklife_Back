@@ -2,17 +2,14 @@ package com.mysite.sbb.user;
 
 import java.util.Optional;
 
+import com.mysite.sbb.DataNotFoundException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.mysite.sbb.DataNotFoundException;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RequiredArgsConstructor
 @Service
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserService {
 
 	private final UserRepository userRepository;
@@ -30,28 +27,23 @@ public class UserService {
 	}
 
 	public SiteUser getUser(String username) {
-		Optional<SiteUser> siteUser = this.userRepository.findByusername(username);
-		if (siteUser.isPresent()) {
-			return siteUser.get();
-		} else {
+		return this.userRepository.findByUsername(username)
+				.orElseThrow(() -> new DataNotFoundException("siteuser not found"));
+	}
 
-			throw new DataNotFoundException("siteuser not found");
+	public boolean isValidUser(String username, String password) {
+		Optional<SiteUser> optionalUser = userRepository.findByUsername(username);
+		if (optionalUser.isPresent()) {
+			SiteUser user = optionalUser.get();
+			return passwordEncoder.matches(password, user.getPassword());
+		} else {
+			return false;
 		}
 	}
 
-
-	public boolean isValidUser(String username, String password) {
-		// 데이터베이스에서 사용자를 조회합니다.
-		Optional<SiteUser> optionalUser = userRepository.findByusername(username);
-
-		// 사용자가 존재하는지 확인합니다.
-		if (optionalUser.isPresent()) {
-			SiteUser user = optionalUser.get();
-			// 입력된 비밀번호와 저장된 비밀번호를 비교합니다.
-			return passwordEncoder.matches(password, user.getPassword());
-		} else {
-			// 사용자가 존재하지 않는 경우
-			return false;
-		}
+	public UserDTO getUserDetails(String username) {
+		SiteUser siteuser = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+		return new UserDTO(siteuser.getUserid(), siteuser.getEmail(), siteuser.getPhonenumber(), siteuser.getUsername());
 	}
 }

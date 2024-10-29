@@ -62,7 +62,7 @@ public class PhotoController {
             Long imageNo = photoService.saveImage(photoDTO.toEntity()); // 이미지 저장
 
             // 저장된 이미지의 URL 반환
-            String imageUrl = "http://localhost:8200/image/api/" + imageNo;
+            String imageUrl = "http://localhost:8000/image/api/" + imageNo;
             return ResponseEntity.ok(imageUrl);
         } catch (IOException e) {
             e.printStackTrace();
