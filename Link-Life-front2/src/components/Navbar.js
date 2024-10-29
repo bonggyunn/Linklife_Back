@@ -9,12 +9,15 @@ import {
 } from "react-icons/fa";
 import { FaPeopleGroup } from "react-icons/fa6";
 import logo from "../images/logo_Link-Life(1).png";
+import {useNavigate} from "react-router-dom"
 
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <nav className="flex justify-between px-4 py-3 bg-white border">
       <div className="relative">
-        <button className="text-black group">
+        <button className="text-black group"
+        onClick={()=> {navigate('/')}}>
           <FaAngleLeft className="w-6 h-6 mt-1" />
           <div className="absolute z-10 hidden w-20 bg-gray-200 rounded-lg shadow -right-12 group-hover:block top-full">
             <ul className="py-2 text-xs text-gray-950">

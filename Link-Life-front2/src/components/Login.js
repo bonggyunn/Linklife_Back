@@ -7,11 +7,6 @@ import logo_kakao from "../images/logo_kakao.svg";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const User = {
-  username: "whyewon",
-  password: "woo1234",
-};
-
 const Login = () => {
   const navigation = useNavigate();
 
@@ -30,14 +25,6 @@ const Login = () => {
     setPw(e.target.value);
   };
 
-  // const handleId = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setId(e.target.value);
-  // };
-
-  // const handlePw = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setPw(e.target.value);
-  // };
-
   const onClickConfirmButton = async () => {
     try {
       const response = await axios.post("/api/login", {
@@ -46,15 +33,15 @@ const Login = () => {
       });
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token); // 로컬 스토리지에 토큰 저장
-        localStorage.setItem("name", response.data.username);
-        alert("로그인에 성공했습니다.");
+        localStorage.setItem("username", response.data.username); // 사용자 이름 저장
+        alert(`${response.data.username}님 반갑습니다 ! `);
         navigation("/");
       } else {
         alert("로그인에 실패했습니다.");
       }
     } catch (error) {
       console.error("로그인 요청 중 오류 발생:", error);
-      alert("로그인 중 오류가 발생했습니다.");
+      alert("아이디와 비밀번호를 확인해주세요.");
     }
   };
 
@@ -147,13 +134,6 @@ const Login = () => {
               </div>
 
               <div>
-                {/* 로그인 버튼 */}
-                {/*<button*/}
-                {/*    onClick={onClickConfirmButton}*/}
-                {/*    disabled={notAllow}*/}
-                {/*    className="l-loginButton"*/}
-                {/*>로그인*/}
-                {/*</button>*/}
                 <div
                   onClick={() => !notAllow && onClickConfirmButton()}
                   className="l-loginButton"
