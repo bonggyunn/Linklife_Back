@@ -1,85 +1,101 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import Modal from "./Modal";
 import Tabs from "./Tabs";
+import Event from "./Event";
 
 const MyTimeLine = () => {
-  // modal을 위한 state
+  // 모달 상태 관리
   const [modalOpen, setModalOpen] = useState(false);
+  // 게시글 상태 관리
+  const [posts, setPosts] = useState([]);
+  const [title, setTitle] = useState("");
+  const [eventContent, setEventContent] = useState("");
+
+  // 게시글 추가 함수
+  const handleAddPost = () => {
+    if (title) {
+      setPosts([...posts, title]);
+      setModalOpen(false); // 모달 닫기
+    }
+  };
 
   return (
     <>
-      <div
-        className="w-full"
-        style={{
-          minHeight: "500px", // 배경 크기(최소 높이)
-        }}
-      >
+      <div className="w-full" style={{ minHeight: "500px" }}>
         <div className="py-12 px-11">
           <h1 className="text-3xl font-bold text-black">내 타임라인</h1>
         </div>
         <div>
+          {/* 타임라인 영역 */}
           <div
+            className="flex overflow-x-auto"
             style={{
-              width: "715px", // 배경이미지 크기(너비)
-              height: "155px", // 배경이미지 크기(높이)
+              width: "615px",
+              height: "155px",
               border: "1px solid #CFCFCF",
               marginLeft: "44px",
             }}
           >
-            <div className="flex w-full h-full">
-              <div className="flex items-center w-8 h-full hover:bg-blue-200">
-                <MdChevronLeft className="w-8 h-8 text-gray-400 hover:text-gray-500" />
-              </div>
+            {/* 가로선 */}
+            <hr
+              className="absolute border-2 border-green-800"
+              style={{
+                width: "615px",
+                marginTop: "85px",
+                zIndex: "1",
+              }}
+            />
 
-              {/* 타임라인 설계 영역(핵심 영역) */}
-              <div className="w-full h-full hover:bg-green-100"></div>
-
-              <div className="flex items-center w-8 h-full hover:bg-blue-200">
-                <MdChevronRight className="w-8 h-8 text-gray-400 hover:text-gray-500" />
-              </div>
+            <div className="flex">
+              {posts.map((post, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center justify-center"
+                  style={{
+                    height: "140px", // 요소 높이 고정
+                    position: "relative", // 위치 고정
+                  }}
+                >
+                  {/* 사진을 위한 공간 */}
+                  <div className="w-full mb-2 border border-green-700 h-2/4"></div>
+                  {/* 날짜 및 행사명 */}
+                  <span
+                    className="w-4 h-4 mb-2 bg-green-400 rounded-full"
+                    style={{
+                      zIndex: "2",
+                    }}
+                  ></span>
+                  <div className="flex items-center justify-center w-48 border border-gray-700 h-1/4">
+                    {post}
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-          <div
-            style={{
-              width: "715px", // 배경이미지 크기(너비)
-              height: "65px", // 배경이미지 크기(높이)
-              border: "1px solid #CFCFCF",
-              marginLeft: "44px",
-            }}
-            onClick={(event) => {
-              event.preventDefault();
-              setModalOpen(true);
-            }}
-          >
-            <a href="">
-              <div className="flex items-center justify-center w-full h-full bg-gray-100 hover:bg-gray-200">
-                <FiPlusCircle className="w-10 h-10" />
-              </div>
-            </a>
           </div>
         </div>
 
+        {/* 게시글 등록 버튼 */}
+        <div
+          style={{
+            position: "relative",
+            width: "615px",
+            height: "65px",
+            border: "1px solid #CFCFCF",
+            marginLeft: "44px",
+          }}
+          onClick={() => setModalOpen(true)}
+        >
+          <div className="flex items-center justify-center w-full h-full bg-gray-100 hover:bg-gray-200">
+            <FiPlusCircle className="w-10 h-10" />
+          </div>
+        </div>
+
+        {/* 게시글 모달 */}
         {modalOpen && (
-          <div
-            className="-ml-96 bg-black/40"
-            style={{
-              marginTop: "-410px",
-            }}
-          >
+          <div className="-ml-96 bg-black/40" style={{ marginTop: "-410px" }}>
             <Modal
-              // Modal Title 방법(1)
               title={"행사 게시글 등록"}
-              // Modal Title 방법(2)
-              // title={
-              //    <div className="py-2 text-2xl font-semibold">Custom Header</div>
-              // }
-
-              // modal 우측 상단 x버튼 (주석처리 or true:x버튼O / false:x버튼X)
-              // closeBtn={false}
-
               onClose={() => setModalOpen(false)}
               footer={
                 <div className="flex justify-end gap-2 py-3">
@@ -106,17 +122,19 @@ const MyTimeLine = () => {
                       fontSize: "14px",
                       marginLeft: "15px",
                     }}
-                    onClick={() => setModalOpen(false)}
+                    onClick={handleAddPost} // 클릭 시 게시글 등록
                   >
                     등록
                   </button>
                 </div>
               }
             >
-              {/* Modal 팝업창 내용 */}
-              <div className="px-4">
-                <Tabs />
-              </div>
+              <Event
+                title={title}
+                setTitle={setTitle}
+                eventContent={eventContent}
+                setEventContent={setEventContent}
+              />
             </Modal>
           </div>
         )}
