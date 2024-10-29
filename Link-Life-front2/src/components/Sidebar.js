@@ -1,7 +1,10 @@
 import React from "react";
+
 import picture_user from "../images/user.jpeg";
 
 const Sidebar = () => {
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
   return (
     <>
       <div className="fixed h-full px-4 py-2 bg-black w-96">
@@ -14,7 +17,7 @@ const Sidebar = () => {
             <div
               className="pt-20 pb-5"
               style={{
-                backgroundImage: `url(${picture_user})`,
+                backgroundImage: `url(../media/profile.jpg)`,
                 backgroundPosition: "center", // 이미지 위치
                 backgroundSize: "cover", // 이미지 꽉차게
                 backgroundRepeat: "no-repeat", // 이미지 반복 지정
@@ -25,7 +28,9 @@ const Sidebar = () => {
             ></div>
           </li>
           <li className="py-2 mb-2 rounded">
-            <span className="p-10 text-2xl font-bold text-white">우혜원</span>
+            <span className="p-10 text-2xl font-bold text-white">
+                {username}
+            </span>
           </li>
           <li className="py-2 mb-2 rounded">
             <input

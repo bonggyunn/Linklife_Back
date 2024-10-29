@@ -5,11 +5,26 @@ import { useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
+import {useNavigate} from "react-router-dom";
 
-import Modal from "./Modal";
-import Tabs from "./Tabs";
-import picture_user from "../images/user.jpeg";
-import { useNavigate, useNavigation } from "react-router-dom";
+const Friend = () => {
+  // modal을 위한 state
+  const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  const username = localStorage.getItem("username");
+
+  useEffect(() => {
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      navigate("/api/login");
+    }
+  }, [token]);
+
+  const gotoTimeline = () => {
+    navigate('/timeline');
+  }
 
 // 즐겨찾기 및 친구 탭 관리
 const dataCollection_tab1 = [
@@ -23,13 +38,13 @@ const dataCollection_tab2 = [
   },
 ];
 
-// 즐겨찾기(bookmark) 탭 데이터 영역
+// 내 프로필
 const dataCollection_my = [
   {
-    name: "차훈",
+    name: username,
     date: "2025.02.09 (D-456)",
     title: "2025학년도 전기 학위수여식",
-    image: "../media/hoon.jpg",
+    image: "../media/profile.jpg",
     // image: 'https://image.shutterstock.com/image-photo/blueberries-isolated-260nw-722035450.jpg'
   },
 ];
@@ -37,10 +52,10 @@ const dataCollection_my = [
 // 즐겨찾기(bookmark) 탭 데이터 영역
 const dataCollection_bookmark = [
   {
-    name: "유봉균",
+    name: "차훈",
     date: "2025.02.09 (D-456)",
     title: "2025학년도 전기 학위수여식",
-    image: "../media/bong-gyun.jpg",
+    image: "../media/hoon.jpg",
   },
   {
     name: "홍길동",
@@ -72,12 +87,6 @@ const dataCollection_friend = [
   },
 ];
 
-const Friend = () => {
-  // modal을 위한 state
-  const [modalOpen, setModalOpen] = useState(false);
-  const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-
   // accordion(즐겨찾기; bookmark)를 위한 state
   // -> userState(-1, 0...): 접기, userState(0): 펴기
   const [bookmarkAccordion, setActiveBookmarkAccordion] = useState(0);
@@ -99,13 +108,6 @@ const Friend = () => {
     }
     setActiveFriendAccordion(index);
   }
-
-  useEffect(() => {
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      navigate("/api/login");
-    }
-  }, [token]);
 
   return (
     <>
@@ -156,6 +158,7 @@ const Friend = () => {
                   사진의 경로를 찾을 때는 'process.env.PUBLIC_URL + 경로'를 사용함 */}
                   <img
                     src={process.env.PUBLIC_URL + dataCollection_my[0].image}
+                    onClick={gotoTimeline}
                     alt="인물 사진"
                     style={{
                       height: "80px",
@@ -169,7 +172,7 @@ const Friend = () => {
                 {/* 이름, 날짜 */}
                 <div>
                   <div
-                    className="flex justify-between p-2"
+                    className="flex justify-between p-3.5"
                     style={{
                       height: "60px",
                       width: "280px",
