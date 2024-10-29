@@ -17,7 +17,7 @@ import Group_Calendar from "./components/Group_Calendar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Update from "./components/Update";
-import MyTimeLinetest from "./components/MyTimeLine(test)";
+import MyTimeLine from "./components/MyTimeLine";
 
 function App() {
   // sidebar(펼치기,접기 관리)을 위한 state
@@ -65,7 +65,7 @@ function App() {
                   <Sidebar />
                   <div className="w-full ml-96">
                     <Navbar />
-                    <MyTimeLinetest />
+                    <MyTimeLine />
                   </div>
                 </div>
               </>
