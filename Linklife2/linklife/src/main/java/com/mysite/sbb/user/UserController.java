@@ -23,7 +23,7 @@ public class UserController {
 	private final UserService userService;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final UserRepository userRepository; // UserRepository 사용
+	private final UserRepository userRepository;
 
 	@Autowired
 	public UserController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
@@ -42,7 +42,13 @@ public class UserController {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		String token = jwtTokenProvider.createToken(userDetails.getUsername(), userDetails.getAuthorities().toString());
 
-		return ResponseEntity.ok(new ApiResponse(token));
+		SiteUser siteUser = userService.getUser(userDetails.getUsername());
+		String username = siteUser.getUsername();
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("token", token);
+		response.put("name", siteUser.getUsername());
+		return ResponseEntity.ok(new ApiResponse("200", token, username));
 	}
 
 	@PostMapping("/signup")
@@ -62,35 +68,20 @@ public class UserController {
 	@GetMapping("/mypage")
 	public ResponseEntity<?> mypageGET(@AuthenticationPrincipal UserDetails user, @RequestParam(name = "menu", defaultValue = "1") int menu) {
 		if (user == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요 시 응답
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 		}
 
-		Optional<SiteUser> obj = userRepository.findByusername(user.getUsername());
+		Optional<SiteUser> obj = userRepository.findByUsername(user.getUsername());
 		if (obj.isPresent()) {
 			SiteUser member = obj.get();
 			Map<String, Object> response = new HashMap<>();
 			response.put("member", member);
 			response.put("menu", menu);
-			return ResponseEntity.ok(response); // 사용자 정보와 메뉴 JSON 반환
+			return ResponseEntity.ok(response);
 		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자 정보를 찾을 수 없습니다."); // 사용자 정보 없음 응답
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자 정보를 찾을 수 없습니다.");
 		}
 	}
 }
-
-
-//	@PostMapping("/session_create")
-//	public Map<String, Object> createSession(@RequestBody LoginRequest loginRequest, HttpSession session) {
-//		Map<String, Object> data = new HashMap<>();
-//
-//		session.setAttribute("user", loginRequest);
-//
-//		data.put("sessionId", session.getId());
-//
-//		return data;
-//	}
-
-
-
 
 

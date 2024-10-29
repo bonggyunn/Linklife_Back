@@ -1,33 +1,22 @@
 import "./App.css";
-import { FiPlusCircle } from "react-icons/fi";
-import { CiLock } from "react-icons/ci";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 
-import Tagbar from "./components/Tagbar";
 import NavbarFull_Friend from "./components/NavbarFull_Friend";
 import NavbarFull from "./components/NavbarFull";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-
-import Modal from "./components/Modal";
-import Tabs from "./components/Tabs";
 
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import Friend from "./components/Friend";
 
 import IntroduceTeam from "./components/IntroduceTeam";
-import InformationUpdate from "./components/InformationUpdate";
-import MyTimeLine from "./components/MyTimeLine";
 import Group_Total from "./components/Group_Total";
 import Group_Calendar from "./components/Group_Calendar";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Sidebar_Group from "./components/Sidebar_Group";
 
 import Update from "./components/Update";
-import Timeline from "./components/Timeline";
 import MyTimeLinetest from "./components/MyTimeLine(test)";
 
 function App() {
@@ -38,8 +27,6 @@ function App() {
   // const [modalOpen, setModalOpen] = useState(false);
 
   const [message, setMessage] = useState([]);
-
-
 
   return (
     <>

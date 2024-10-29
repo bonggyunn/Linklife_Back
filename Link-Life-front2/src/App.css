@@ -1,235 +1,235 @@
 .tabs {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #cfcfcf;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #cfcfcf;
 }
 .tab {
-    background: #fff;
-    flex: 1;
-    padding: 7px;
-    text-align: center;
-    border-bottom: 1px solid #cfcfcf;
-    cursor: pointer;
-    position: relative;
+  background: #fff;
+  flex: 1;
+  padding: 7px;
+  text-align: center;
+  border-bottom: 1px solid #cfcfcf;
+  cursor: pointer;
+  position: relative;
 }
 .active-tab {
-    background: #fff;
-    border-bottom: 2px solid black;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    animation: new 0.5s;
+  background: #fff;
+  border-bottom: 2px solid black;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  animation: new 0.5s;
 }
 @keyframes new {
-    from {
-        top: 10px;
-        left: 0;
-        right: 0;
-        background: #f6f6f6;
-    }
-    to {
-        top: 0px;
-        left: 0;
-        right: 0;
-        border-bottom: 2px solid black;
-    }
+  from {
+    top: 10px;
+    left: 0;
+    right: 0;
+    background: #f6f6f6;
+  }
+  to {
+    top: 0px;
+    left: 0;
+    right: 0;
+    border-bottom: 2px solid black;
+  }
 }
 
 .contents {
-    flex-grow: 1;
-    position: relative;
+  flex-grow: 1;
+  position: relative;
 }
 .content {
-    background: white;
-    padding: 20px;
-    width: 100%;
-    height: 100%;
-    display: none;
-    position: relative;
+  background: white;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  display: none;
+  position: relative;
 }
 .active-content {
-    display: block;
-    padding: 20px;
-    transition: all 1s ease-in-out;
-    height: 330px;
-    
-    /* 스크롤바(scroll) 설정 */
-    overflow: auto;
+  display: block;
+  padding: 20px;
+  transition: all 1s ease-in-out;
+  height: 330px;
+
+  /* 스크롤바(scroll) 설정 */
+  overflow: auto;
 }
 /* 스크롤바(scroll) 설정 */
 .active-content::-webkit-scrollbar {
-    width: 4px;
-    background-color: #cfcfcf;
-  }
+  width: 4px;
+  background-color: #cfcfcf;
+}
 
 .content h2 {
-    padding: 0px 0px 5px 0px;
+  padding: 0px 0px 5px 0px;
 }
 .content hr {
-    width: 100px;
-    height: 2px;
-    background: #222;
-    margin-bottom: 5px;
+  width: 100px;
+  height: 2px;
+  background: #222;
+  margin-bottom: 5px;
 }
 .content p {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .btn-upload {
-    width: 100%;
-    height: 100%;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  width: 100%;
+  height: 100%;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 #file {
-display: none;
+  display: none;
 }
 
 /* 팝업창 - 참석자 - 친구/그룹 버튼 */
 .typeButton {
-    height: 40px;
-    width: 59px;
-    border-radius: 5px;
-    background: #5f6561;
-    color: white;
-    font-weight: bold;
-    margin-right: 6px;
+  height: 40px;
+  width: 59px;
+  border-radius: 5px;
+  background: #5f6561;
+  color: white;
+  font-weight: bold;
+  margin-right: 6px;
 }
 .active-typeButton {
-    animation: change 0.5s;
-    
-    height: 40px;
-    width: 59px;
-    border-radius: 5px;
-    background: #265136;
-    color: white;
-    font-weight: bold;
-    margin-right: 6px;
+  animation: change 0.5s;
+
+  height: 40px;
+  width: 59px;
+  border-radius: 5px;
+  background: #265136;
+  color: white;
+  font-weight: bold;
+  margin-right: 6px;
 }
 @keyframes change {
-    from {
-        left: 0;
-        right: 0;
-        background: #f6f6f6;
-    }
-    to {
-        left: 0;
-        right: 0;
-    }
+  from {
+    left: 0;
+    right: 0;
+    background: #f6f6f6;
+  }
+  to {
+    left: 0;
+    right: 0;
+  }
 }
 /* 팝업창 - 참석자 - 그룹 항목 */
 .groupTab {
-    min-width: 180px;
-    height: 40px;
-    padding: 10px 15px;
-    border-radius: 5px;
-    background: #2478FF;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-    margin-right: 5px;
+  min-width: 180px;
+  height: 40px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  background: #2478ff;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  margin-right: 5px;
 }
 .groupTab:hover {
-    background: #0054FF;
-    font-weight: bold;
+  background: #0054ff;
+  font-weight: bold;
 }
 
 /* 팝업창 - 참석자 - 추가/취소 버튼 */
 .add-cancel-button {
-    border: 1px solid #888988;
-    height: 30px;
-    width: 65px;
-    border-radius: 20px;
-    background: #DBF1D8;
-    color: #0F2C1A;
-    font-weight: bold;
-    margin-right: 6px;
-    font-size: 12px;
+  border: 1px solid #888988;
+  height: 30px;
+  width: 65px;
+  border-radius: 20px;
+  background: #dbf1d8;
+  color: #0f2c1a;
+  font-weight: bold;
+  margin-right: 6px;
+  font-size: 12px;
 }
 
 .add-cancel-button:hover {
-    border: 1px solid #888988;
-    height: 30px;
-    width: 65px;
-    border-radius: 20px;
-    background: #C4E4C0;
-    color: #0F2C1A;
-    font-weight: bold;
-    margin-right: 6px;
-    cursor: pointer;
+  border: 1px solid #888988;
+  height: 30px;
+  width: 65px;
+  border-radius: 20px;
+  background: #c4e4c0;
+  color: #0f2c1a;
+  font-weight: bold;
+  margin-right: 6px;
+  cursor: pointer;
 }
 
 /* 팝업창 - 일정 - 종일, 오늘, D-day 버튼 (일반, 활성화) */
 .calanderButton {
-    border: 1px solid #888988;
-    height: 30px;
-    width: 65px;
-    border-radius: 20px;
-    background: #DBF1D8;
-    color: #0F2C1A;
-    font-weight: bold;
-    margin-right: 6px;
-    font-size: 12px;
+  border: 1px solid #888988;
+  height: 30px;
+  width: 65px;
+  border-radius: 20px;
+  background: #dbf1d8;
+  color: #0f2c1a;
+  font-weight: bold;
+  margin-right: 6px;
+  font-size: 12px;
 }
 
 .calanderButton:hover {
-    border: 1px solid #888988;
-    height: 30px;
-    width: 65px;
-    border-radius: 20px;
-    background: #C4E4C0;
-    color: #0F2C1A;
-    font-weight: bold;
-    margin-right: 6px;
-    cursor: pointer;
+  border: 1px solid #888988;
+  height: 30px;
+  width: 65px;
+  border-radius: 20px;
+  background: #c4e4c0;
+  color: #0f2c1a;
+  font-weight: bold;
+  margin-right: 6px;
+  cursor: pointer;
 }
 
 .active-calanderButton {
-    animation: cal 0.5s;
-    
-    height: 40px;
-    width: 59px;
-    border-radius: 5px;
-    background: #265136;
-    color: white;
-    font-weight: bold;
-    margin-right: 6px;
+  animation: cal 0.5s;
+
+  height: 40px;
+  width: 59px;
+  border-radius: 5px;
+  background: #265136;
+  color: white;
+  font-weight: bold;
+  margin-right: 6px;
 }
 @keyframes cal {
-    from {
-        left: 0;
-        right: 0;
-        background: #f6f6f6;
-    }
-    to {
-        left: 0;
-        right: 0;
-    }
+  from {
+    left: 0;
+    right: 0;
+    background: #f6f6f6;
+  }
+  to {
+    left: 0;
+    right: 0;
+  }
 }
 
- /* 팝업창 - 참석자 - 친구/그룹 box 영역 */
+/* 팝업창 - 참석자 - 친구/그룹 box 영역 */
 .lists {
-    flex-grow: 1;
-    position: relative;
+  flex-grow: 1;
+  position: relative;
 }
 .list {
-    display: none;
-    position: relative;
+  display: none;
+  position: relative;
 }
 .active-list {
-    display: block;
-    transition: all 1s ease-in-out;
+  display: block;
+  transition: all 1s ease-in-out;
 }
 
 /* 팀소개(IntroduceTeam) start */
-.it-body{
+.it-body {
   width: 100%;
   height: 100vh;
   display: flex;
@@ -237,12 +237,12 @@ display: none;
   justify-content: center;
   background: linear-gradient(to bottom, #56ccf2 0%, #2f80ed 100%);
 }
-.it-wrapper .it-outer{
+.it-wrapper .it-outer {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.it-wrapper .it-card{
+.it-wrapper .it-card {
   background: #fff;
   width: 430px;
   display: flex;
@@ -253,61 +253,65 @@ display: none;
   position: absolute;
   justify-content: space-between;
   border-radius: 100px 20px 20px 100px;
-  box-shadow: 0px 10px 15px rgba(0,0,0,0.1);
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
 }
-.it-outer:hover .it-card{
+.it-outer:hover .it-card {
   animation-play-state: paused;
 }
 .card1 {
-    animation: animate 15s linear infinite;
-    animation-delay: -3s;
+  animation: animate 15s linear infinite;
+  animation-delay: -3s;
 }
 .card2 {
-    animation: animate 15s linear infinite;
-    animation-delay: 0s;
+  animation: animate 15s linear infinite;
+  animation-delay: 0s;
 }
 .card3 {
-    animation: animate 15s linear infinite;
-    animation-delay: 3s;
+  animation: animate 15s linear infinite;
+  animation-delay: 3s;
 }
 .card4 {
-    animation: animate 15s linear infinite;
-    animation-delay: 6s;
+  animation: animate 15s linear infinite;
+  animation-delay: 6s;
 }
 .card5 {
-    animation: animate 15s linear infinite;
-    animation-delay: 9s;
+  animation: animate 15s linear infinite;
+  animation-delay: 9s;
 }
 
 @keyframes animate {
-  0%{
+  0% {
     opacity: 0;
     transform: translateY(100%) scale(0.5);
   }
-  5%, 20%{
+  5%,
+  20% {
     opacity: 0.4;
     transform: translateY(100%) scale(0.7);
   }
-  25%, 40%{
+  25%,
+  40% {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0%) scale(1);
   }
-  45%, 60%{
+  45%,
+  60% {
     opacity: 0.4;
     transform: translateY(-100%) scale(0.7);
   }
-  65%, 100%{
+  65%,
+  100% {
     opacity: 0;
     transform: translateY(-100%) scale(0.5);
   }
 }
 
-.it-card .it-content{
+.it-card .it-content {
   display: flex;
   align-items: center;
 }
-.it-wrapper .it-card .it-img{
+.it-wrapper .it-card .it-img {
   height: 90px;
   width: 90px;
   position: absolute;
@@ -315,22 +319,22 @@ display: none;
   background: #fff;
   border-radius: 50%;
   padding: 5px;
-  box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
-.it-card .it-img img{
+.it-card .it-img img {
   height: 100%;
   width: 100%;
   border-radius: 50%;
   object-fit: cover;
 }
-.it-card .it-details{
+.it-card .it-details {
   margin-left: 80px;
 }
-.it-details span{
+.it-details span {
   font-weight: 600;
   font-size: 18px;
 }
-.it-card a{
+.it-card a {
   text-decoration: none;
   padding: 7px 18px;
   border-radius: 25px;
@@ -338,7 +342,7 @@ display: none;
   background: linear-gradient(to bottom, #56ccf2 0%, #2f80ed 100%);
   transition: all 0.3s ease;
 }
-.it-card a:hover{
+.it-card a:hover {
   transform: scale(0.94);
 }
 
@@ -346,7 +350,6 @@ display: none;
   font-size: 13px;
 }
 /* 팀소개(IntroduceTeam) end */
-
 
 /* 로그인(Login) start */
 
@@ -392,6 +395,8 @@ display: none;
 
 .l-loginButton {
   height: 60px;
+  text-align: center;
+  align-content: center;
   border: none;
   font-size: 16px;
   letter-spacing: 2px;
@@ -400,7 +405,7 @@ display: none;
   background-color: #256136;
   color: #ffffff;
   cursor: pointer;
-  
+
   width: 540px;
   margin: 10px 30px 20px 30px;
 }
@@ -414,7 +419,7 @@ display: none;
   border-radius: 8px;
   background-color: #fee500;
   color: #000000;
-  
+
   width: 540px;
   margin: 0px 30px 20px 30px;
 }
@@ -476,7 +481,7 @@ display: none;
   padding-right: 15px;
   color: grey;
   cursor: pointer;
-  
+
   /* 즐겨찾기 탭 배경화면 및 글씨 색상 */
   /* background: black;
   color: white; */
