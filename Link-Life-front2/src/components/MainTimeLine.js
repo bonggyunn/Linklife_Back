@@ -16,7 +16,7 @@ const MainTimeLine = ({ posts }) => {
                 className="absolute border-2 border-green-800"
                 style={{
                     width: "750px",
-                    marginTop: "55px",
+                    marginTop: "45px",
                     zIndex: "1",
                 }}
             />
@@ -27,7 +27,7 @@ const MainTimeLine = ({ posts }) => {
                         key={index}
                         className="flex flex-col items-center justify-center"
                         style={{
-                            height: "100px",
+                            height: "80px",
                             position: "relative",
                         }}
                     >
@@ -40,9 +40,10 @@ const MainTimeLine = ({ posts }) => {
                                 zIndex: "2",
                             }}
                         ></span>
-                        {/* 게시글 제목 표시 */}
+                        {/* 게시글 제목 표시 :: subject*/}
                         <div className="flex items-center justify-center w-48 h-1/5">
-                            {post.title}
+                            {post.subject}
+
                         </div>
                     </div>
                 ))}

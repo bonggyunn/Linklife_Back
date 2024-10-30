@@ -13,14 +13,21 @@ const MyTimeLine = () => {
 
     // 초기 로드 시 게시글 목록 가져오기
     useEffect(() => {
+        const token = localStorage.getItem("token");
         const fetchPosts = async () => {
             try {
-                const response = await fetch("/post/list?page=0");
+                const response = await fetch("/post/list?page=0", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 if (response.ok) {
                     const data = await response.json();
+                    console.log(data.content);
                     setPosts(data.content); // 서버에서 받은 게시글 목록 설정
                 } else {
                     console.error("게시글 목록 가져오기 실패:", response.statusText);
+                    console.log(posts);
                 }
             } catch (error) {
                 console.error("오류 발생:", error);
