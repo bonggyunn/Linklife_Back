@@ -110,4 +110,9 @@ public class PostService {
 		post.getVoter().add(siteUser);
 		this.postRepository.save(post);
 	}
+
+	public Page<Post> getPostsByAuthorAndEventDate(SiteUser author, int page) {
+		Pageable pageable = PageRequest.of(page, 10);  // 페이지당 10개의 게시글
+		return postRepository.findByAuthorOrderByEventStartDateTimeAsc(author, pageable);
+	}
 }

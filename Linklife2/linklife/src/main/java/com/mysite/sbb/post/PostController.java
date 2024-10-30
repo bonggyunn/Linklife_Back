@@ -133,6 +133,14 @@ public class PostController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 성공적으로 작성되었습니다.");
 	}
+	@GetMapping("/author/posts")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<Page<Post>> getPostsByAuthor(@AuthenticationPrincipal UserDetails userDetails,
+													   @RequestParam(value = "page", defaultValue = "0") int page) {
+		SiteUser author = userService.getUser(userDetails.getUsername());
+		Page<Post> posts = postService.getPostsByAuthorAndEventDate(author, page);
+		return ResponseEntity.ok(posts);
+	}
 }
 
 //	@GetMapping("/create")

@@ -2,6 +2,7 @@ package com.mysite.sbb.post;
 
 import java.util.List;
 
+import com.mysite.sbb.user.SiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,4 +37,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
 	@Query("SELECT p FROM Post p WHERE p.author.id = :userId")
 	Page<Post> findAllByKeywordAndUserId(int userId, Pageable pageable);
+	@Query("SELECT p FROM Post p WHERE p.author = :author ORDER BY p.eventStartDateTime ASC")
+	Page<Post> findByAuthorOrderByEventStartDateTimeAsc(@Param("author") SiteUser author, Pageable pageable);
 }
+
