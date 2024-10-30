@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../App.css";
+import DatePicker from "react-datepicker";
 import {
   FaSearch,
   FaEdit,
@@ -16,8 +17,9 @@ import picture_user2 from "../images/user2.jpeg";
 import picture_user3 from "../images/user3.jpeg";
 import NavbarFull from "./NavbarFull";
 import Event from "./Event";
+import "react-datepicker/dist/react-datepicker.css";
 
-const Tabs = () => {
+const Tabs = ({ title, setTitle, eventContent, setEventContent }) => {
   const [toggleState, setToggleState] = useState(1);
   const toggleTab = (index) => {
     setToggleState(index);
@@ -37,6 +39,8 @@ const Tabs = () => {
 
   // 일정 - (우측 하단)종일, 오늘, D-day 버튼
   const [allDayState, setAllDayState] = useState(0);
+  const [activeTab, setActiveTab] = useState("event");
+  const [selectedDate, setSelectedDate] = useState(null);
   let count_AllDayButton = 0;
   const alldayButton = (index) => {
     count_AllDayButton = count_AllDayButton + index;
@@ -143,23 +147,44 @@ const Tabs = () => {
           <div
             className={toggleState === 1 ? "content active-content" : "content"}
           >
-            <Event />
+              <Event
+                  title={title}
+                  setTitle={setTitle}
+                  eventContent={eventContent}
+                  setEventContent={setEventContent}
+              />
           </div>
 
           <div
             className={toggleState === 2 ? "content active-content" : "content"}
           >
-            <div className="flex w-full h-full -mt-2">
+            <div className="flex w-full h-full -mt-2 ">
               {/* 일정 Tab - 좌측(left) 화면 */}
-              <div
-                style={{
-                  border: "1px solid #cfcfcf",
-                  borderRight: "none",
-                  height: "315px",
-                  width: "364px",
-                }}
-              ></div>
+                {/* 일정 Tab - 좌측 화면 */}
+                <div
+                    style={{
+                        border: "1px solid #cfcfcf",
+                        borderRight: "none",
+                        height: "315px",
+                        width: "364px",
+                        padding: "16px",
+                    }}
+                >
+                    <h3 className="mb-2 text-lg font-semibold ">날짜 선택</h3>
+                    <div style={{
+                        width: "100px;"
+                    }}>
+                        <DatePicker
+                            selected={selectedDate}
+                            onChange={(date) => setSelectedDate(date)}
+                            justify
+                            inline
+                            placeholderText="날짜를 선택하세요"
+                            display={""}
 
+                        />
+                    </div>
+                </div>
               {/* 0. 일정 Tab -> 우측(right) 화면 */}
               <div
                 style={{

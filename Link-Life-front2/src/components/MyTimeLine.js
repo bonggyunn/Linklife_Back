@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import Modal from "./Modal";
 import Event from "./Event";
+import Tabs from "./Tabs";
+import MainTimeLine from "./MainTimeLine";
 
 const MyTimeLine = () => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -16,8 +18,7 @@ const MyTimeLine = () => {
                 const response = await fetch("/post/list?page=0");
                 if (response.ok) {
                     const data = await response.json();
-                    // 서버에서 받아온 게시글 목록을 posts 상태로 설정
-                    setPosts(data.content); // Page 객체의 content 속성에서 게시글 배열 가져옴
+                    setPosts(data.content); // 서버에서 받은 게시글 목록 설정
                 } else {
                     console.error("게시글 목록 가져오기 실패:", response.statusText);
                 }
@@ -56,8 +57,7 @@ const MyTimeLine = () => {
             if (response.ok) {
                 const newPost = { title, content: eventContent };
                 alert("게시글이 성공적으로 등록되었습니다.");
-                // 서버에 저장된 새 게시글을 posts 상태에 추가
-                setPosts([newPost, ...posts]); // 새 게시글이 맨 앞에 오도록 추가
+                setPosts([newPost, ...posts]);
                 setModalOpen(false);
                 setTitle("");
                 setEventContent("");
@@ -71,110 +71,60 @@ const MyTimeLine = () => {
 
     return (
         <>
-            <div className="w-full" style={{ minHeight: "500px" }}>
-                <div className="py-12 px-11">
-                    <h1 className="text-3xl font-bold text-black">내 타임라인</h1>
-                </div>
-                <div>
-                    {/* 타임라인 영역 */}
-                    <div
-                        className="flex overflow-x-auto"
-                        style={{
-                            width: "615px",
-                            height: "155px",
-                            border: "1px solid #CFCFCF",
-                            marginLeft: "44px",
-                        }}
-                    >
-                        {/* 타임라인 가로선 */}
-                        <hr
-                            className="absolute border-2 border-green-800"
-                            style={{
-                                width: "615px",
-                                marginTop: "85px",
-                                zIndex: "1",
-                            }}
-                        />
-                        <div className="flex">
-                            {/* 게시글 목록을 반복하여 표시 */}
-                            {posts.map((post, index) => (
-                                <div
-                                    key={index}
-                                    className="flex flex-col items-center justify-center"
+            <div className="py-12 px-11">
+                <h1 className="text-3xl font-bold text-black">내 타임라인</h1>
+            </div>
+
+            {/* MainTimeLine 컴포넌트 삽입 */}
+            <MainTimeLine posts={posts} />
+
+            {/* 게시글 등록 모달 */}
+            {modalOpen && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <Modal
+                        title={"행사 게시글 등록"}
+                        onClose={() => setModalOpen(false)}
+                        footer={
+                            <div className="flex justify-end gap-2 py-3">
+                                <button
+                                    className="font-bold text-white bg-green-800 hover:bg-green-900"
                                     style={{
-                                        height: "140px",
-                                        position: "relative",
+                                        borderRadius: "10px",
+                                        width: "120px",
+                                        height: "35px",
+                                        fontSize: "14px",
+                                        marginLeft: "15px",
                                     }}
+                                    onClick={handleAddPost}
                                 >
-                                    {/* 게시글 이미지 영역 (임시) */}
-                                    <div className="w-full mb-2 border border-green-700 h-2/4"></div>
-                                    {/* 게시글 표시 동그라미 */}
-                                    <span
-                                        className="w-4 h-4 mb-2 bg-green-400 rounded-full"
-                                        style={{
-                                            zIndex: "2",
-                                        }}
-                                    ></span>
-                                    {/* 게시글 제목 표시 */}
-                                    <div className="flex items-center justify-center w-48 border border-gray-700 h-1/4">
-                                        {post.title}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                                    등록
+                                </button>
+                            </div>
+                        }
+                    >
+                        <Tabs
+                            title={title}
+                            setTitle={setTitle}
+                            eventContent={eventContent}
+                            setEventContent={setEventContent}
+                        />
+                    </Modal>
                 </div>
+            )}
 
-                {/* 게시글 등록 버튼 */}
-                <div
-                    style={{
-                        position: "relative",
-                        width: "615px",
-                        height: "65px",
-                        border: "1px solid #CFCFCF",
-                        marginLeft: "44px",
-                    }}
-                    onClick={() => setModalOpen(true)}
-                >
-                    <div className="flex items-center justify-center w-full h-full bg-gray-100 hover:bg-gray-200">
-                        <FiPlusCircle className="w-10 h-10" />
-                    </div>
+            {/* 게시글 등록 버튼 */}
+            <div
+                style={{
+                    width: "750px",
+                    height: "65px",
+                    border: "1px solid #CFCFCF",
+                    marginLeft: "44px",
+                }}
+                onClick={() => setModalOpen(true)}
+            >
+                <div className="flex items-center justify-center w-full h-full bg-gray-100 hover:bg-gray-200">
+                    <FiPlusCircle className="w-10 h-10" />
                 </div>
-
-                {/* 게시글 등록 모달 */}
-                {modalOpen && (
-                    <div className="-ml-96 bg-black/40" style={{ marginTop: "-410px" }}>
-                        <Modal
-                            title={"행사 게시글 등록"}
-                            onClose={() => setModalOpen(false)}
-                            footer={
-                                <div className="flex justify-end gap-2 py-3">
-                                    <button
-                                        className="font-bold text-white bg-green-800 hover:bg-green-900"
-                                        style={{
-                                            borderRadius: "10px",
-                                            width: "120px",
-                                            height: "35px",
-                                            fontSize: "14px",
-                                            marginLeft: "15px",
-                                        }}
-                                        onClick={handleAddPost}
-                                    >
-                                        등록
-                                    </button>
-                                </div>
-                            }
-                        >
-                            {/* Event 컴포넌트를 통해 제목과 내용 입력 */}
-                            <Event
-                                title={title}
-                                setTitle={setTitle}
-                                eventContent={eventContent}
-                                setEventContent={setEventContent}
-                            />
-                        </Modal>
-                    </div>
-                )}
             </div>
         </>
     );

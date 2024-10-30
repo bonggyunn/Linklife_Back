@@ -214,7 +214,9 @@ const dataCollection_friend = [
                   </div>
 
                   {/* 타임라인 설계 영역(핵심 영역) */}
-                  <div className="w-full h-full cursor-pointer hover:bg-green-100"></div>
+                  <div className="w-full h-full cursor-pointer hover:bg-green-100">
+                    
+                  </div>
 
                   <div className="flex items-center w-8 h-full cursor-pointer hover:bg-blue-200">
                     <MdChevronRight className="w-8 h-8 text-gray-400 hover:text-gray-500" />
