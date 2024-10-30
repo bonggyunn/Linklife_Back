@@ -10,32 +10,38 @@ const MyTimeLine = () => {
     const [posts, setPosts] = useState([]);
     const [title, setTitle] = useState("");
     const [eventContent, setEventContent] = useState("");
+    const [selectedDate, setSelectedDate] = useState(null); // 선택한 날짜를 저장할 상태 추가
 
     // 초기 로드 시 게시글 목록 가져오기
-    useEffect(() => {
+    const fetchPosts = async (date) => {
         const token = localStorage.getItem("token");
-        const fetchPosts = async () => {
-            try {
-                const response = await fetch("/post/list?page=0", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data.content);
-                    setPosts(data.content); // 서버에서 받은 게시글 목록 설정
-                } else {
-                    console.error("게시글 목록 가져오기 실패:", response.statusText);
-                    console.log(posts);
-                }
-            } catch (error) {
-                console.error("오류 발생:", error);
+        try {
+            let url = "/post/list?page=0";
+            if (date) {
+                url += `&date=${date}`; // 선택한 날짜로 필터링하는 쿼리 파라미터 추가
             }
-        };
 
-        fetchPosts();
-    }, []);
+            const response = await fetch(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const sortedPosts = data.content.sort((a, b) => new Date(a.eventStartDateTime) - new Date(b.eventStartDateTime)); // 날짜순 정렬
+                setPosts(sortedPosts);
+            } else {
+                console.error("게시글 목록 가져오기 실패:", response.statusText);
+            }
+        } catch (error) {
+            console.error("오류 발생:", error);
+        }
+    };
+
+// 초기 로드 시와 날짜 변경 시 게시물 목록 가져오기
+    useEffect(() => {
+        fetchPosts(selectedDate);
+    }, [selectedDate]);
 
     // 게시글 추가 함수 - 서버에 POST 요청을 보내 게시글을 등록
     const handleAddPost = async () => {
@@ -55,19 +61,21 @@ const MyTimeLine = () => {
                 body: JSON.stringify({
                     subject: title,
                     content: eventContent,
-                    eventStartDateTime: "2023-12-01T10:00:00",
-                    eventEndDateTime: "2023-12-01T12:00:00",
+                    eventStartDateTime: selectedDate ? selectedDate.toISOString() : "2023-12-01T10:00:00", // 선택된 날짜 사용
+                    eventEndDateTime: selectedDate ? new Date(selectedDate.getTime() + 2 * 60 * 60 * 1000).toISOString() : "2023-12-01T12:00:00", // 기본적으로 2시간 후로 설정
                     eventLocation: "서울",
                 }),
             });
 
             if (response.ok) {
-                const newPost = { title, content: eventContent };
+                const newPost = { title, content: eventContent, eventStartDateTime: selectedDate };
+                fetchPosts(selectedDate); // 새로 추가된 게시물 포함하여 다시 가져오기
                 alert("게시글이 성공적으로 등록되었습니다.");
                 setPosts([newPost, ...posts]);
                 setModalOpen(false);
                 setTitle("");
                 setEventContent("");
+                setSelectedDate(null); // 등록 후 날짜 초기화
             } else {
                 console.error("게시글 등록 실패:", response.statusText);
             }
@@ -114,6 +122,8 @@ const MyTimeLine = () => {
                             setTitle={setTitle}
                             eventContent={eventContent}
                             setEventContent={setEventContent}
+                            selectedDate={selectedDate} // Tabs 컴포넌트로 날짜 상태 전달
+                            setSelectedDate={setSelectedDate} // 날짜 선택 시 상태 업데이트 함수 전달
                         />
                     </Modal>
                 </div>

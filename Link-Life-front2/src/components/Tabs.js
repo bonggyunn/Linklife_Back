@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../App.css";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   FaSearch,
   FaEdit,
@@ -20,27 +21,51 @@ import Event from "./Event";
 import "react-datepicker/dist/react-datepicker.css";
 
 const Tabs = ({ title, setTitle, eventContent, setEventContent }) => {
-  const [toggleState, setToggleState] = useState(1);
-  const toggleTab = (index) => {
-    setToggleState(index);
-  };
+    const [toggleState, setToggleState] = useState(1);
+    const toggleTab = (index) => {
+        setToggleState(index);
+    };
 
-  // 참석자 - 친구/그룹 버튼 관련 state 생성
-  const [searchTypeState, setSearchTypeState] = useState(1);
-  const searchTypeButton = (index) => {
-    setSearchTypeState(index);
-  };
+    // 참석자 - 친구/그룹 버튼 관련 state 생성
+    const [searchTypeState, setSearchTypeState] = useState(1);
+    const searchTypeButton = (index) => {
+        setSearchTypeState(index);
+    };
 
-  // 참석자 - 친구/그룹 버튼 관련 state 생성
-  const [groupState, setGroupState] = useState(1);
-  const groupTab = (index) => {
-    setGroupState(index);
-  };
+    // 참석자 - 친구/그룹 버튼 관련 state 생성
+    const [groupState, setGroupState] = useState(1);
+    const groupTab = (index) => {
+        setGroupState(index);
+    };
 
-  // 일정 - (우측 하단)종일, 오늘, D-day 버튼
-  const [allDayState, setAllDayState] = useState(0);
-  const [activeTab, setActiveTab] = useState("event");
-  const [selectedDate, setSelectedDate] = useState(null);
+    // 일정 - (우측 하단)종일, 오늘, D-day 버튼
+    const [allDayState, setAllDayState] = useState(0);
+    const [activeTab, setActiveTab] = useState("event");
+    const [selectedDate, setSelectedDate] = useState(null);
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+    };
+
+    const handleSubmit = () => {
+        const postForm = {
+            subject: title,
+            content: eventContent,
+            eventStartDateTime: selectedDate ? selectedDate.toISOString() : null,
+            // 필요한 다른 필드들
+        };
+
+        fetch("/post/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(postForm),
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error("Error:", error));
+    };
+
   let count_AllDayButton = 0;
   const alldayButton = (index) => {
     count_AllDayButton = count_AllDayButton + index;

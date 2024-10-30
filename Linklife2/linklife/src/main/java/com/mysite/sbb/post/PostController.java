@@ -41,6 +41,9 @@ public class PostController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 		}
 
+		log.info("Received start date: {}", postForm.getEventStartDateTime());
+		log.info("Received end date: {}", postForm.getEventEndDateTime());
+
 		// 사용자 정보 가져오기
 		SiteUser siteUser = this.userService.getUser(userDetails.getUsername());
 
