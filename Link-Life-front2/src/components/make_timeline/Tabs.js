@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../App.css";
+import "../../App.css";
 import DatePicker from "react-datepicker";
 import {
   FaSearch,
@@ -12,10 +12,10 @@ import { GrMapLocation } from "react-icons/gr";
 import { FiUpload } from "react-icons/fi";
 import { IoCloseCircle, IoPlayCircleSharp, IoPlaySharp } from "react-icons/io5";
 import { ImArrowLeft, ImArrowRight } from "react-icons/im";
-import picture_user from "../images/user.jpeg";
-import picture_user2 from "../images/user2.jpeg";
-import picture_user3 from "../images/user3.jpeg";
-import NavbarFull from "./NavbarFull";
+import picture_user from "../../images/user.jpeg";
+import picture_user2 from "../../images/user2.jpeg";
+import picture_user3 from "../../images/user3.jpeg";
+import NavbarFull from "../NavbarFull";
 import Event from "./Event";
 import "react-datepicker/dist/react-datepicker.css";
 
