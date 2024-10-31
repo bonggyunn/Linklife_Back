@@ -20,73 +20,92 @@ import NavbarFull from "./NavbarFull";
 import Event from "./Event";
 import "react-datepicker/dist/react-datepicker.css";
 
-const Tabs = ({ title, setTitle, eventContent, setEventContent }) => {
+const Tabs = ({ title, setTitle, eventContent, setEventContent, selectedDate, setSelectedDate }) => {
     const [toggleState, setToggleState] = useState(1);
-    const toggleTab = (index) => {
-        setToggleState(index);
-    };
-
     // 참석자 - 친구/그룹 버튼 관련 state 생성
     const [searchTypeState, setSearchTypeState] = useState(1);
-    const searchTypeButton = (index) => {
-        setSearchTypeState(index);
-    };
-
     // 참석자 - 친구/그룹 버튼 관련 state 생성
     const [groupState, setGroupState] = useState(1);
-    const groupTab = (index) => {
-        setGroupState(index);
-    };
-
     // 일정 - (우측 하단)종일, 오늘, D-day 버튼
     const [allDayState, setAllDayState] = useState(0);
+    const [todayState, setTodayState] = useState(0);
+    const [dDayState, setDDayState] = useState(0);
+    // 파일정보를 저장할 state 생성
+    // - 업로드한 파일의 정보를 저장할 state를 만든다.
+    const [file, setFile] = useState({});
+
+    const toggleTab = (index) => setToggleState(index);
+    const searchTypeButton = (index) => setSearchTypeState(index);
+    const groupTab = (index) => setGroupState(index);
+    const alldayButton = (index) => {
+        count_AllDayButton = count_AllDayButton + index;
+        setAllDayState(count_AllDayButton % 2);
+        console.log("count : " + parseInt(count_AllDayButton));
+        console.log("count/2 : " + parseInt(count_AllDayButton % 2));
+    };
+    const todayButton = () => setTodayState((prev) => (prev + 1) % 2);
+    const dDayButton = () => setDDayState((prev) => (prev + 1) % 2);
+
+    const formatDate = (date) => {
+        if (!date) return null;
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    };
+
     const [activeTab, setActiveTab] = useState("event");
-    const [selectedDate, setSelectedDate] = useState(null);
+    //const [selectedDate, setSelectedDate] = useState(null);
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
 
     const handleSubmit = () => {
+        const formatDate = (date) => {
+            if (!date) return null;
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        };
+
         const postForm = {
             subject: title,
             content: eventContent,
-            eventStartDateTime: selectedDate ? selectedDate.toISOString() : null,
-            // 필요한 다른 필드들
+            eventStartDateTime: selectedDate ? formatDate(selectedDate) : null,
+            eventEndDateTime: selectedDate ? formatDate(selectedDate) : null, // 필요에 따라 종료 날짜도 설정 가능
+            // 다른 필요한 필드들 추가 가능
         };
 
-        fetch("/post/create", {
+        console.log("Sending postForm:", postForm); // 전송할 데이터 확인용
+
+        fetch("http://localhost:8080/post/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(postForm),
         })
-            .then(response => response.json())
-            .then(data => console.log(data))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Success:", data);
+            })
             .catch(error => console.error("Error:", error));
     };
 
-  let count_AllDayButton = 0;
-  const alldayButton = (index) => {
-    count_AllDayButton = count_AllDayButton + index;
-    setAllDayState(count_AllDayButton % 2);
-    console.log("count : " + parseInt(count_AllDayButton));
-    console.log("count/2 : " + parseInt(count_AllDayButton % 2));
-  };
 
-  const [todayState, setTodayState] = useState(0);
-  const todayButton = (index) => {
-    setTodayState(index);
-  };
-
-  const [dDayState, setDDayState] = useState(0);
-  const dDayButton = (index) => {
-    setDDayState(index);
-  };
-
-  // 파일정보를 저장할 state 생성
-  // - 업로드한 파일의 정보를 저장할 state를 만든다.
-  const [file, setFile] = useState({});
+    let count_AllDayButton = 0;
 
   // URL.createObjectURL() 이용하기
   // - 이미지 미리보기 url을 state 값에 저장한다.
@@ -297,10 +316,10 @@ const Tabs = ({ title, setTitle, eventContent, setEventContent }) => {
                         style={{
                             border: '1px solid #8c8c8c',
                             borderRadius: '5px',
-                            float: 'left', 
+                            float: 'left',
                             }}
-                        
-                        > 
+
+                        >
                             <div className='flex items-center h-7 w-31'>
                                 <IoCloseCircle className='w-5 h-5 ml-24' />
                             </div>
