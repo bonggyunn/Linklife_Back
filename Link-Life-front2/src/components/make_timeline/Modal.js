@@ -16,7 +16,7 @@ const Modal = ({
       {/* modal background */}
       <div
         id="modal-overlay"
-        className="bg-black/40 absolute z-[99] w-screen h-screen"
+        className="flex justify-center"
       >
         {/* modal*/}
         <div
@@ -24,7 +24,7 @@ const Modal = ({
           className="absolute z-[100] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg
         flex flex-col"
           // divide-y-[1px] divide-[#cfcfcf] -> 행사 게시글 등록과 탭(Tab) 사이에 존재하던 구분선 주석처리(=제외)
-          style={{ width, height }}
+          style={{ width, height, border: "3px solid #4CAF50"}}
           {...props}
         >
           {/* modal - header */}

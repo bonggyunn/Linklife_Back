@@ -1,6 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import PostModal from "./PostModal";
 
 const MainTimeLine = ({ posts }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedPost, setSelectedPost] = useState(null);
+
+    const openPostModal = (post) => {
+        setSelectedPost(post);
+        setIsModalOpen(true);
+    };
+
+    const closePostModal = () => {
+        setSelectedPost(null);
+        setIsModalOpen(false);
+    };
+
     return (
         <div
             className="flex overflow-x-auto"
@@ -29,6 +43,7 @@ const MainTimeLine = ({ posts }) => {
                         style={{
                             height: "80px",
                             position: "relative",
+                            margin: "0 20px",
                         }}
                     >
                         {/* 게시글 이미지 영역 (임시) */}
@@ -40,14 +55,20 @@ const MainTimeLine = ({ posts }) => {
                                 zIndex: "2",
                             }}
                         ></span>
-                        {/* 게시글 제목 표시 :: subject*/}
-                        <div className="flex items-center justify-center w-48 h-1/5">
+                        {/* 게시글 제목 표시 */}
+                        <div
+                            onClick={() => openPostModal(post)}
+                            className="flex items-center justify-center w-48 h-1/5 cursor-pointer"
+                        >
                             {post.subject}
-
                         </div>
                     </div>
                 ))}
             </div>
+
+            {isModalOpen && selectedPost && (
+                <PostModal post={selectedPost} onClose={closePostModal} />
+            )}
         </div>
     );
 };
