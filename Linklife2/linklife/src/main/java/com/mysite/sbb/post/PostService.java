@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PostService {
@@ -80,6 +82,10 @@ public class PostService {
 
 	public void create(String subject, String content, SiteUser author,
 					   LocalDateTime eventstartdatetime, LocalDateTime eventenddatetime, String eventlocation) {
+
+		log.info("Creating post with start date: {}", eventstartdatetime);
+		log.info("Creating post with end date: {}", eventenddatetime);
+
 		Post q = new Post();
 		q.setSubject(subject);
 		q.setContent(content);

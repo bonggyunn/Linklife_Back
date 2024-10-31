@@ -6,6 +6,10 @@ import { FiPlusCircle } from "react-icons/fi";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 import {useNavigate} from "react-router-dom";
+import MainTimeLine from "./make_timeline/MainTimeLine";
+import { useTimeline } from "./make_timeline/TimelineContext";
+
+
 
 const Friend = () => {
   // modal을 위한 state
@@ -14,6 +18,7 @@ const Friend = () => {
 
   const token = localStorage.getItem("token");
   const username = localStorage.getItem("username");
+  const { posts } = useTimeline();
 
   useEffect(() => {
     if (!token) {
@@ -203,24 +208,17 @@ const dataCollection_friend = [
                 style={{
                   width: "750px", // 배경이미지 크기(너비)
                   height: "100px", // 배경이미지 크기(높이)
-                  border: "1px solid #CFCFCF",
-                  marginLeft: "44px",
+                  marginLeft: "50px",
                   backgroundColor: "white",
                 }}
               >
                 <div className="flex w-full h-full">
-                  <div className="flex items-center w-8 h-full cursor-pointer hover:bg-blue-200">
-                    <MdChevronLeft className="w-8 h-8 text-gray-400 hover:text-gray-500" />
-                  </div>
 
                   {/* 타임라인 설계 영역(핵심 영역) */}
-                  <div className="w-full h-full cursor-pointer hover:bg-green-100">
-                    
+                  <div>
+                    <MainTimeLine posts={posts} />
                   </div>
 
-                  <div className="flex items-center w-8 h-full cursor-pointer hover:bg-blue-200">
-                    <MdChevronRight className="w-8 h-8 text-gray-400 hover:text-gray-500" />
-                  </div>
                 </div>
               </div>
             </div>
