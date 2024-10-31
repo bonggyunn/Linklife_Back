@@ -58,14 +58,10 @@ const dataCollection_my = [
 const dataCollection_bookmark = [
   {
     name: "차훈",
-    date: "2025.02.09 (D-456)",
-    title: "2025학년도 전기 학위수여식",
     image: "../media/hoon.jpg",
   },
   {
     name: "홍길동",
-    date: "2024.01.09 (D-61)",
-    title: "삼성SDS 취업연계형 인턴",
     image: "../media/user.jpeg",
   },
 ];
@@ -73,22 +69,16 @@ const dataCollection_bookmark = [
 // 친구(friend) 탭 데이터 영역
 const dataCollection_friend = [
   {
-    name: "고강희",
-    date: "2024.01.09 (D-61)",
-    title: "삼성SDS 취업연계형 인턴",
-    image: "../media/kang-hui.jpg",
+    name: "우혜원",
+    image: "../media/hye-won.jpg",
   },
   {
     name: "이순신",
-    date: "2024.01.09 (D-61)",
-    title: "삼성SDS 취업연계형 인턴",
     image: "../media/user.jpeg",
   },
   {
-    name: "우혜원",
-    date: "2025.02.09 (D-456)",
-    title: "2025학년도 전기 학위수여식",
-    image: "../media/hye-won.jpg",
+    name: "고강희",
+    image: "../media/kang-hui.jpg",
   },
 ];
 
