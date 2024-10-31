@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import Modal from "./Modal";
 import Tabs from "./Tabs";
@@ -10,13 +10,19 @@ const MyTimeLine = () => {
     const [title, setTitle] = useState("");
     const [eventContent, setEventContent] = useState("");
     const [selectedDate, setSelectedDate] = useState(null);
+    const [location, setLocation] = useState("");
 
-    const { posts, fetchPosts, handleAddPost } = useTimeline();
+    const { posts, handleAddPost } = useTimeline();
+
+    const fetchPosts = useCallback((date) => {
+        // TimelineContext 내 fetchPosts 함수 호출 코드
+    }, []);
 
     // 선택된 날짜가 변경될 때마다 게시글 목록을 가져오고 정렬
     useEffect(() => {
         fetchPosts(selectedDate);
     }, [selectedDate, fetchPosts]);
+
 
     const handleAddPostClick = async () => {
         if (!selectedDate) {
@@ -24,13 +30,14 @@ const MyTimeLine = () => {
             return;
         }
 
-        const adjustedStartDate = new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000).toISOString(); // 하루 추가된 날짜 사용
-        await handleAddPost(title, eventContent, adjustedStartDate); // 새 게시글 추가
+        const adjustedStartDate = new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000).toISOString();
 
-        // 입력 필드 초기화 및 모달 닫기
+        await handleAddPost(title, eventContent, adjustedStartDate, location);
+
         setModalOpen(false);
         setTitle("");
         setEventContent("");
+        setLocation("");
         setSelectedDate(null);
     };
 
@@ -40,10 +47,8 @@ const MyTimeLine = () => {
                 <h1 className="text-3xl font-bold text-black">내 타임라인</h1>
             </div>
 
-            {/* MainTimeLine 컴포넌트 삽입 */}
             <MainTimeLine posts={posts} />
 
-            {/* 게시글 등록 모달 */}
             {modalOpen && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                     <Modal
@@ -74,12 +79,13 @@ const MyTimeLine = () => {
                             setEventContent={setEventContent}
                             selectedDate={selectedDate}
                             setSelectedDate={setSelectedDate}
+                            location={location}
+                            setLocation={setLocation}
                         />
                     </Modal>
                 </div>
             )}
 
-            {/* 게시글 등록 버튼 */}
             <div
                 style={{
                     width: "750px",

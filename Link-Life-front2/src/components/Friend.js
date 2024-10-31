@@ -198,7 +198,7 @@ const dataCollection_friend = [
                 style={{
                   width: "750px", // 배경이미지 크기(너비)
                   height: "100px", // 배경이미지 크기(높이)
-                  marginLeft: "50px",
+                  marginLeft: "44px",
                   backgroundColor: "white",
                 }}
               >

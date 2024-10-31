@@ -4,10 +4,10 @@ const TimelineContext = createContext();
 
 export const TimelineProvider = ({ children }) => {
     const [posts, setPosts] = useState([]);
-    const [token] = useState(localStorage.getItem("token"));
+    const token = localStorage.getItem("token");
 
     const fetchPosts = async (selectedDate = null) => {
-        if (!token) return;
+        if (!token) return; // 토큰이 없으면 요청하지 않음
 
         try {
             let url = "/post/list?page=0";
@@ -21,10 +21,11 @@ export const TimelineProvider = ({ children }) => {
 
             if (response.ok) {
                 const data = await response.json();
+                console.log("Fetched data:", data);
 
                 // selectedDate를 기준으로 앞선 순서로 정렬
-                const sortedPosts = data.content.sort((a, b) =>
-                    new Date(a.eventStartDateTime) - new Date(b.eventStartDateTime)
+                const sortedPosts = data.content.sort(
+                    (a, b) => new Date(a.eventStartDateTime) - new Date(b.eventStartDateTime)
                 );
 
                 setPosts(sortedPosts);
@@ -36,9 +37,9 @@ export const TimelineProvider = ({ children }) => {
         }
     };
 
-    const handleAddPost = async (subject, content, eventStartDateTime) => {
-        if (!subject || !content || !eventStartDateTime) {
-            alert("제목, 내용, 날짜를 모두 입력해주세요.");
+    const handleAddPost = async (subject, content, eventStartDateTime, eventLocation) => {
+        if (!subject || !eventStartDateTime) {
+            alert("제목과 날짜를 모두 입력해주세요.");
             return;
         }
 
@@ -53,8 +54,10 @@ export const TimelineProvider = ({ children }) => {
                     subject,
                     content,
                     eventStartDateTime,
-                    eventEndDateTime: new Date(new Date(eventStartDateTime).getTime() + 2 * 60 * 60 * 1000).toISOString(),
-                    eventLocation: "서울",
+                    eventEndDateTime: new Date(
+                        new Date(eventStartDateTime).getTime() + 2 * 60 * 60 * 1000
+                    ).toISOString(),
+                    eventLocation,
                 }),
             });
 
@@ -69,8 +72,13 @@ export const TimelineProvider = ({ children }) => {
         }
     };
 
+    // 컴포넌트가 처음 렌더링될 때 fetchPosts를 호출
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
     return (
-        <TimelineContext.Provider value={{ posts, fetchPosts, handleAddPost }}>
+        <TimelineContext.Provider value={{ posts, handleAddPost, fetchPosts }}>
             {children}
         </TimelineContext.Provider>
     );
