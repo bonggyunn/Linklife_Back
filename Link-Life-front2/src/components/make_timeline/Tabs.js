@@ -16,11 +16,11 @@ import { ImArrowLeft, ImArrowRight } from "react-icons/im";
 import picture_user from "../../images/user.jpeg";
 import picture_user2 from "../../images/user2.jpeg";
 import picture_user3 from "../../images/user3.jpeg";
-import NavbarFull from "../NavbarFull";
+
 import Event from "./Event";
 import "react-datepicker/dist/react-datepicker.css";
 
-const Tabs = ({ title, setTitle, eventContent, setEventContent, selectedDate, setSelectedDate }) => {
+const Tabs = ({ title, setTitle, location, setLocation, eventContent, setEventContent, selectedDate, setSelectedDate }) => {
     const [toggleState, setToggleState] = useState(1);
     // 참석자 - 친구/그룹 버튼 관련 state 생성
     const [searchTypeState, setSearchTypeState] = useState(1);
@@ -46,16 +46,7 @@ const Tabs = ({ title, setTitle, eventContent, setEventContent, selectedDate, se
     const todayButton = () => setTodayState((prev) => (prev + 1) % 2);
     const dDayButton = () => setDDayState((prev) => (prev + 1) % 2);
 
-    const formatDate = (date) => {
-        if (!date) return null;
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-    };
+
 
     const [activeTab, setActiveTab] = useState("event");
     //const [selectedDate, setSelectedDate] = useState(null);
@@ -72,14 +63,14 @@ const Tabs = ({ title, setTitle, eventContent, setEventContent, selectedDate, se
             const hours = String(date.getHours()).padStart(2, '0');
             const minutes = String(date.getMinutes()).padStart(2, '0');
             const seconds = String(date.getSeconds()).padStart(2, '0');
-            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+            return `${year}-${month}-${day}`;
         };
-
         const postForm = {
             subject: title,
             content: eventContent,
+            eventLocation: location,
             eventStartDateTime: selectedDate ? formatDate(selectedDate) : null,
-            eventEndDateTime: selectedDate ? formatDate(selectedDate) : null, // 필요에 따라 종료 날짜도 설정 가능
+            eventEndDateTime: selectedDate ? formatDate(selectedDate) : null,
             // 다른 필요한 필드들 추가 가능
         };
 
@@ -147,6 +138,7 @@ const Tabs = ({ title, setTitle, eventContent, setEventContent, selectedDate, se
 
   return (
     <>
+
       <div className="container">
         <div className="tabs">
           <div
@@ -194,6 +186,8 @@ const Tabs = ({ title, setTitle, eventContent, setEventContent, selectedDate, se
               <Event
                   title={title}
                   setTitle={setTitle}
+                  location={location}
+                  setLocation={setLocation}
                   eventContent={eventContent}
                   setEventContent={setEventContent}
               />
